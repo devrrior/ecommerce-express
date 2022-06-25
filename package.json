@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "license": "MIT",
   "scripts": {
-    "start": "node build/index.js",
-    "dev": "ts-node-dev src/index.ts",
+    "start": "node build/config/server.js",
+    "dev": "ts-node-dev src/config/server.ts",
     "tsc": "tsc"
   },
   "devDependencies": {

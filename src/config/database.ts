@@ -6,7 +6,9 @@ const databaseConnect = async () => {
 
     const database = await mongoose.connect(DB_URI);
 
-    console.log(`Database is connected to ${database.connection.db.databaseName}`)
+    console.log(
+      `Database is connected to ${database.connection.db.databaseName}`
+    );
   } catch (err) {
     console.log(err);
     throw new Error('Error at the start of the database');

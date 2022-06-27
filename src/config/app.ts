@@ -1,6 +1,6 @@
 import express from 'express';
 
-import loadApiUserEndpoints from '../routes/users.routes';
+import loadApiUserEndpoints from '../routes/user.routes';
 
 const app = express();
 

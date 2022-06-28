@@ -3,7 +3,7 @@ import { getModelForClass, prop } from '@typegoose/typegoose';
 import ICategory from '../interfaces/category.interface';
 
 class Category implements ICategory {
-  @prop({ required: true, lowercase: true })
+  @prop({ required: true, lowercase: true, unique: true })
   name: string;
 }
 

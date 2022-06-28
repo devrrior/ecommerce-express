@@ -1,6 +1,6 @@
 import express from 'express';
 
-import loadApiUserEndpoints from '../routes/user.routes';
+import routes from '../routes';
 
 const app = express();
 
@@ -8,6 +8,6 @@ app.set('port', process.env.PORT || 3000);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-loadApiUserEndpoints(app);
+app.use(routes)
 
 export default app;

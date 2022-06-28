@@ -1,9 +1,11 @@
-import { Router} from 'express';
+import { Router } from 'express';
 import user from './user.routes';
+import category from './category.routes';
 
-const routes = Router();
+const router = Router();
 
-routes.use('/api/v1/users', user)
+router.use('/api/v1/users', user)
+router.use('/api/v1/categories', category);
 
 
-export default routes;
+export default router;

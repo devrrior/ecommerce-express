@@ -1,6 +1,6 @@
 import ICategory from '../interfaces/category.interface';
 import ICreateActions from '../interfaces/createActions.interface';
-import IEditableActions from '../interfaces/editableActions.interface';
+import IEditableByNameActions from '../interfaces/editableByNameAction.interface';
 import IGetByNameAction from '../interfaces/getByNameAction.interface';
 import IListAction from '../interfaces/listAction.interface';
 import CategoryModel from '../models/category.model';
@@ -10,7 +10,7 @@ class CategoryService
     IListAction<ICategory>,
     IGetByNameAction<ICategory>,
     ICreateActions<ICategory>,
-    IEditableActions<ICategory>
+    IEditableByNameActions<ICategory>
 {
   async list(limit: number, page: number): Promise<ICategory[]> {
     return CategoryModel.find({}, null, {
@@ -32,21 +32,21 @@ class CategoryService
     return CategoryModel.create(resource);
   }
 
-  async putById(id: string, resource: ICategory): Promise<ICategory | null> {
-    return CategoryModel.findByIdAndUpdate({ id }, resource, { new: true });
+  async putByName(name: string, resource: ICategory): Promise<ICategory | null> {
+    return CategoryModel.findByIdAndUpdate({ name }, resource, { new: true });
   }
 
-  async patchById(id: string, resource: ICategory): Promise<ICategory | null> {
+  async patchByName(name: string, resource: Partial<ICategory>): Promise<ICategory | null> {
     return CategoryModel.findByIdAndUpdate(
-      { id },
+      { name },
       // TODO that could depends
       { $set: resource },
       { new: true }
     );
   }
 
-  async deleteById(id: string): Promise<boolean> {
-    const res = await CategoryModel.deleteOne({ id });
+  async deleteByName(name: string): Promise<boolean> {
+    const res = await CategoryModel.deleteOne({ name });
     return res.deletedCount === 1;
   }
 }

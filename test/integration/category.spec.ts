@@ -6,7 +6,6 @@ import app from '../../src/config/app';
 import CategoryService from '../../src/services/category.service';
 
 const categoryPayload = {
-  _id: new mongoose.Types.ObjectId().toString(),
   name: 'technology',
 };
 
@@ -66,7 +65,7 @@ describe('/categories', () => {
     await CategoryService.createOne(categoryPayload);
 
     const { statusCode, body } = await request(app).get(
-      `/api/v1/categories/${categoryPayload._id}`
+      `/api/v1/categories/${categoryPayload.name}`
     );
 
     expect(statusCode).toBe(200);

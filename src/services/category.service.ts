@@ -1,12 +1,14 @@
 import ICategory from '../interfaces/category.interface';
 import ICreateActions from '../interfaces/createActions.interface';
 import IEditableActions from '../interfaces/editableActions.interface';
-import IGetActions from '../interfaces/getActions.interface';
+import IGetByNameAction from '../interfaces/getByNameAction.interface';
+import IListAction from '../interfaces/listAction.interface';
 import CategoryModel from '../models/category.model';
 
 class CategoryService
   implements
-    IGetActions<ICategory>,
+    IListAction<ICategory>,
+    IGetByNameAction<ICategory>,
     ICreateActions<ICategory>,
     IEditableActions<ICategory>
 {
@@ -18,8 +20,8 @@ class CategoryService
     });
   }
 
-  async readById(id: string): Promise<ICategory | null> {
-    return CategoryModel.findById(id);
+  async getByName(name: string): Promise<ICategory | null> {
+    return CategoryModel.findOne({ name });
   }
 
   async createMany(resources: ICategory[]): Promise<ICategory[]> {
@@ -37,7 +39,7 @@ class CategoryService
   async patchById(id: string, resource: ICategory): Promise<ICategory | null> {
     return CategoryModel.findByIdAndUpdate(
       { id },
-      // that could depends
+      // TODO that could depends
       { $set: resource },
       { new: true }
     );

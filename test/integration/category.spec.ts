@@ -45,7 +45,7 @@ describe('/categories', () => {
       .send(categoryPayload);
 
     expect(statusCode).toBe(201);
-    expect(body.name).toMatch(categoryPayload.name);
+    expect(body.name).toStrictEqual(categoryPayload.name);
   });
 
   // GET /categories
@@ -73,6 +73,27 @@ describe('/categories', () => {
   });
 
   // PUT /categories/{id}
+  it('Update whole category', async () => {
+    await CategoryService.createOne(categoryPayload);
+    const updateCategoryPayload = {
+      newName: 'electronic',
+    };
+
+    const { statusCode, body } = await request(app)
+      .put(`/api/v1/categories/${categoryPayload.name}`)
+      .send(updateCategoryPayload);
+
+    expect(statusCode).toBe(200);
+    expect(body.name).toStrictEqual(updateCategoryPayload.newName);
+  });
 
   // DELETE /categories/{id}
+  it('Delete category', async () => {
+    await CategoryService.createOne(categoryPayload);
+    const { statusCode } = await request(app).delete(
+      `/api/v1/categories/${categoryPayload.name}`
+    );
+
+    expect(statusCode).toBe(204);
+  });
 });

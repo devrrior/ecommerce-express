@@ -8,7 +8,7 @@
     "tsc": "tsc",
     "lint": "eslint --ignore-path .gitignore . --ext .ts",
     "lint:fix": "npm run lint -- --fix",
-    "test": "jest --verbose"
+    "test": "jest --verbose --detectOpenHandles --forceExit"
   },
   "devDependencies": {
     "@typegoose/typegoose": "^9.9.0",

@@ -32,11 +32,17 @@ class CategoryService
     return CategoryModel.create(resource);
   }
 
-  async putByName(name: string, resource: ICategory): Promise<ICategory | null> {
-    return CategoryModel.findByIdAndUpdate({ name }, resource, { new: true });
+  async putByName(
+    name: string,
+    resource: ICategory
+  ): Promise<ICategory | null> {
+    return CategoryModel.findOneAndUpdate({ name }, resource, { new: true });
   }
 
-  async patchByName(name: string, resource: Partial<ICategory>): Promise<ICategory | null> {
+  async patchByName(
+    name: string,
+    resource: Partial<ICategory>
+  ): Promise<ICategory | null> {
     return CategoryModel.findByIdAndUpdate(
       { name },
       // TODO that could depends

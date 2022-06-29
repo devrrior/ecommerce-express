@@ -9,12 +9,10 @@ const listHandler = async (_: Request, res: Response) => {
   res.status(200).send(categories);
 };
 
-const getByIdHandler = async (req: Request, res: Response) => {
-  const { id } = req.params;
+const getByNameHandler = async (req: Request, res: Response) => {
+  const { name } = req.params;
 
-  console.log(id)
-
-  const category = await categoryService.readById(id);
+  const category = await categoryService.getByName(name);
 
   category ? res.status(200).send(category) : res.status(404).send();
 };
@@ -31,4 +29,4 @@ const createOneHandler = async (req: Request, res: Response) => {
   res.status(201).send(categoryRes);
 };
 
-export { listHandler, getByIdHandler, createOneHandler };
+export { createOneHandler, getByNameHandler, listHandler };

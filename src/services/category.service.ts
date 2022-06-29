@@ -11,10 +11,11 @@ class CategoryService
     IEditableActions<ICategory>
 {
   async list(limit: number, page: number): Promise<ICategory[]> {
-    return CategoryModel.find({})
-      .sort({ update_at: -1 })
-      .skip(limit * page)
-      .limit(limit);
+    return CategoryModel.find({}, null, {
+      sort: { update_at: -1 },
+      skip: limit * page,
+      limit: limit,
+    });
   }
 
   async readById(id: string): Promise<ICategory | null> {
@@ -22,7 +23,7 @@ class CategoryService
   }
 
   async createMany(resources: ICategory[]): Promise<ICategory[]> {
-    return CategoryModel.create(resources);
+    return CategoryModel.insertMany(resources);
   }
 
   async createOne(resource: ICategory): Promise<ICategory> {

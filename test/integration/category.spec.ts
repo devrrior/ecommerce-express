@@ -49,7 +49,7 @@ describe('/categories', () => {
   });
 
   // GET /categories
-  it('Get a Category collection', async () => {
+  test('Get a Category collection', async () => {
     const responseCategoryService = await CategoryService.createMany(
       categoriesPayload
     );
@@ -58,10 +58,11 @@ describe('/categories', () => {
     expect(statusCode).toBe(200);
     expect(body[0].name).toStrictEqual(responseCategoryService[0].name);
     expect(body[1].name).toStrictEqual(responseCategoryService[1].name);
+
   });
 
   // GET /categories/{id}
-  it('Find category by id', async () => {
+  test('Find category by id', async () => {
     await CategoryService.createOne(categoryPayload);
 
     const { statusCode, body } = await request(app).get(
@@ -73,7 +74,7 @@ describe('/categories', () => {
   });
 
   // PUT /categories/{id}
-  it('Update whole category', async () => {
+  test('Update whole category', async () => {
     await CategoryService.createOne(categoryPayload);
     const updateCategoryPayload = {
       newName: 'electronic',
@@ -88,7 +89,7 @@ describe('/categories', () => {
   });
 
   // DELETE /categories/{id}
-  it('Delete category', async () => {
+  test('Delete category', async () => {
     await CategoryService.createOne(categoryPayload);
     const { statusCode } = await request(app).delete(
       `/api/v1/categories/${categoryPayload.name}`

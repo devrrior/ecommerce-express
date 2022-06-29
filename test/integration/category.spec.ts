@@ -6,7 +6,7 @@ import app from '../../src/config/app';
 import CategoryService from '../../src/services/category.service';
 
 const categoryPayload = {
-  _id: mongoose.Types.ObjectId.toString(),
+  _id: new mongoose.Types.ObjectId().toString(),
   name: 'technology',
 };
 

@@ -1,15 +1,15 @@
 import { Router } from 'express';
 
 import {
-  listHandler,
-  getByIdHandler,
   createOneHandler,
+  getByNameHandler,
+  listHandler,
 } from '../controllers/category.controller';
 
 const router = Router();
 
 router.get('', listHandler);
-router.get('/:id', getByIdHandler);
+router.get('/:name', getByNameHandler);
 router.post('', createOneHandler);
 
 export default router;

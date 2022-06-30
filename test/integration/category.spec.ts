@@ -58,7 +58,6 @@ describe('/categories', () => {
     expect(statusCode).toBe(200);
     expect(body[0].name).toStrictEqual(responseCategoryService[0].name);
     expect(body[1].name).toStrictEqual(responseCategoryService[1].name);
-
   });
 
   // GET /categories/{id}

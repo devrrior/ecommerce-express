@@ -2,10 +2,10 @@ import { Router } from 'express';
 
 import {
   createOneHandler,
+  deleteOneHandler,
   getByNameHandler,
   listHandler,
   updateOneHandler,
-  deleteOneHandler,
 } from '../controllers/category.controller';
 
 const router = Router();

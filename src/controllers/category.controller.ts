@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 
 import ICategory from '../interfaces/category.interface';
+import { CreateCategoryType } from '../schemas/category.schema';
 import categoryService from '../services/category.service';
 
 const listHandler = async (_: Request, res: Response) => {
@@ -19,7 +20,14 @@ const getByNameHandler = async (req: Request, res: Response) => {
     : res.status(404).send();
 };
 
-const createOneHandler = async (req: Request, res: Response) => {
+const createOneHandler = async (
+  req: Request<
+    Record<string, unknown>,
+    Record<string, unknown>,
+    CreateCategoryType
+  >,
+  res: Response
+) => {
   const { name } = req.body;
 
   const category: ICategory = {
@@ -32,14 +40,17 @@ const createOneHandler = async (req: Request, res: Response) => {
 };
 
 const updateOneHandler = async (req: Request, res: Response) => {
-  const { name } = req.params;
-  const { newName } = req.body;
+  const { name: nameParams } = req.params;
+  const { name } = req.body;
 
   const category: ICategory = {
-    name: newName,
+    name,
   };
 
-  const categoryResponse = await categoryService.putByName(name, category);
+  const categoryResponse = await categoryService.putByName(
+    nameParams,
+    category
+  );
 
   categoryResponse
     ? res.status(200).send(categoryResponse)

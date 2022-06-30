@@ -52,7 +52,12 @@ const deleteOneHandler = async (req: Request, res: Response) => {
   const response = await categoryService.deleteByName(name);
 
   response ? res.status(204).send() : res.status(404).send();
-
 };
 
-export { createOneHandler, getByNameHandler, listHandler, updateOneHandler, deleteOneHandler };
+export {
+  createOneHandler,
+  deleteOneHandler,
+  getByNameHandler,
+  listHandler,
+  updateOneHandler,
+};

@@ -76,7 +76,7 @@ describe('/categories', () => {
   test('Update whole category', async () => {
     await CategoryService.createOne(categoryPayload);
     const updateCategoryPayload = {
-      newName: 'electronic',
+      name: 'electronic',
     };
 
     const { statusCode, body } = await request(app)
@@ -84,7 +84,7 @@ describe('/categories', () => {
       .send(updateCategoryPayload);
 
     expect(statusCode).toBe(200);
-    expect(body.name).toStrictEqual(updateCategoryPayload.newName);
+    expect(body.name).toStrictEqual(updateCategoryPayload.name);
   });
 
   // DELETE /categories/{id}

@@ -1,7 +1,12 @@
 import { Router } from 'express';
 
+import { createUserHandler, getUserByIdHandler } from '../controllers/user.controller';
+import validateResource from '../middlewares/validateResource.middleware';
+import { CreateUserSchema } from '../schemas/user.schema';
+
 const router = Router();
 
-router.get('', (_, res) => res.status(200).send('hola'));
+router.post('', validateResource(CreateUserSchema), createUserHandler);
+router.get('/:id', getUserByIdHandler)
 
 export default router;

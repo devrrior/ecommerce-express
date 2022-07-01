@@ -27,9 +27,9 @@ describe('/categories', () => {
   });
 
   afterEach(async () => {
-    const collections = Object.keys(mongoose.connection.collections);
-    for (const collectionName of collections) {
-      await mongoose.connection.collections[collectionName].drop();
+    const collections = await mongoose.connection.db.collections();
+    for (const connection of collections) {
+      await connection.deleteMany({});
     }
   });
 

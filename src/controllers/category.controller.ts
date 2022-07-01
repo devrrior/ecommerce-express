@@ -2,10 +2,10 @@ import { Request, Response } from 'express';
 
 import ICategory from '../interfaces/category.interface';
 import { CreateCategoryType } from '../schemas/category.schema';
-import categoryService from '../services/category.service';
+import CategoryService from '../services/category.service';
 
 const listHandler = async (_: Request, res: Response) => {
-  const categories = await categoryService.list(10, 0);
+  const categories = await CategoryService.list(10, 0);
 
   res.status(200).send(categories);
 };
@@ -13,7 +13,7 @@ const listHandler = async (_: Request, res: Response) => {
 const getByNameHandler = async (req: Request, res: Response) => {
   const { name } = req.params;
 
-  const categoryResponse = await categoryService.getByName(name);
+  const categoryResponse = await CategoryService.getByName(name);
 
   categoryResponse
     ? res.status(200).send(categoryResponse)
@@ -34,7 +34,7 @@ const createOneHandler = async (
     name,
   };
 
-  const categoryResponse = await categoryService.createOne(category);
+  const categoryResponse = await CategoryService.createOne(category);
 
   res.status(201).send(categoryResponse);
 };
@@ -47,7 +47,7 @@ const updateOneHandler = async (req: Request, res: Response) => {
     name,
   };
 
-  const categoryResponse = await categoryService.putByName(
+  const categoryResponse = await CategoryService.putByName(
     nameParams,
     category
   );
@@ -60,7 +60,7 @@ const updateOneHandler = async (req: Request, res: Response) => {
 const deleteOneHandler = async (req: Request, res: Response) => {
   const { name } = req.params;
 
-  const response = await categoryService.deleteByName(name);
+  const response = await CategoryService.deleteByName(name);
 
   response ? res.status(204).send() : res.status(404).send();
 };

@@ -18,6 +18,8 @@ const categoriesPayload = [
   },
 ];
 
+const baseUrl = '/api/v1';
+
 describe('/categories', () => {
   beforeAll(async () => {
     // connect to mongodb
@@ -41,7 +43,7 @@ describe('/categories', () => {
   // POST /categories
   it('Create a category', async () => {
     const { statusCode, body } = await request(app)
-      .post('/api/v1/categories')
+      .post(`${baseUrl}/categories`)
       .send(categoryPayload);
 
     expect(statusCode).toBe(201);
@@ -49,11 +51,13 @@ describe('/categories', () => {
   });
 
   // GET /categories
-  test('Get a Category collection', async () => {
+  it('Get a Category collection', async () => {
     const responseCategoryService = await CategoryService.createMany(
       categoriesPayload
     );
-    const { statusCode, body } = await request(app).get('/api/v1/categories');
+    const { statusCode, body } = await request(app).get(
+      `${baseUrl}/categories`
+    );
 
     expect(statusCode).toBe(200);
     expect(body[0].name).toStrictEqual(responseCategoryService[0].name);
@@ -61,11 +65,11 @@ describe('/categories', () => {
   });
 
   // GET /categories/{id}
-  test('Find category by id', async () => {
+  it('Find category by id', async () => {
     await CategoryService.createOne(categoryPayload);
 
     const { statusCode, body } = await request(app).get(
-      `/api/v1/categories/${categoryPayload.name}`
+      `${baseUrl}/categories/${categoryPayload.name}`
     );
 
     expect(statusCode).toBe(200);
@@ -73,14 +77,14 @@ describe('/categories', () => {
   });
 
   // PUT /categories/{id}
-  test('Update whole category', async () => {
+  it('Update whole category', async () => {
     await CategoryService.createOne(categoryPayload);
     const updateCategoryPayload = {
       name: 'electronic',
     };
 
     const { statusCode, body } = await request(app)
-      .put(`/api/v1/categories/${categoryPayload.name}`)
+      .put(`${baseUrl}/categories/${categoryPayload.name}`)
       .send(updateCategoryPayload);
 
     expect(statusCode).toBe(200);
@@ -88,10 +92,10 @@ describe('/categories', () => {
   });
 
   // DELETE /categories/{id}
-  test('Delete category', async () => {
+  it('Delete category', async () => {
     await CategoryService.createOne(categoryPayload);
     const { statusCode } = await request(app).delete(
-      `/api/v1/categories/${categoryPayload.name}`
+      `${baseUrl}/categories/${categoryPayload.name}`
     );
 
     expect(statusCode).toBe(204);

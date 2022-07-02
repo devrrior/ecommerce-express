@@ -12,43 +12,57 @@ class CategoryService
     ICreateActions<ICategory>,
     IEditableByNameActions<ICategory>
 {
-  async list(limit: number, page: number): Promise<ICategory[]> {
-    return CategoryModel.find({}, null, {
+  async getList(limit: number, page: number): Promise<ICategory[]> {
+    const categories = await CategoryModel.find({}, null, {
       sort: { update_at: -1 },
       skip: limit * page,
       limit: limit,
     });
+
+    return categories.map((category) => category.toObject());
   }
 
   async getByName(name: string): Promise<ICategory | null> {
-    return CategoryModel.findOne({ name });
+    const category = await CategoryModel.findOne({ name });
+
+    return category ? category.toObject() : null;
   }
 
   async createMany(resources: ICategory[]): Promise<ICategory[]> {
-    return CategoryModel.insertMany(resources);
+    const categories = await CategoryModel.create(resources);
+
+    return categories.map((category) => category.toObject());
   }
 
   async createOne(resource: ICategory): Promise<ICategory> {
-    return CategoryModel.create(resource);
+    const category = await CategoryModel.create(resource);
+
+    return category.toObject();
   }
 
   async putByName(
     name: string,
     resource: ICategory
   ): Promise<ICategory | null> {
-    return CategoryModel.findOneAndUpdate({ name }, resource, { new: true });
+    const category = await CategoryModel.findOneAndUpdate({ name }, resource, {
+      new: true,
+    });
+
+    return category ? category.toObject() : null;
   }
 
   async patchByName(
     name: string,
     resource: Partial<ICategory>
   ): Promise<ICategory | null> {
-    return CategoryModel.findByIdAndUpdate(
+    const category = await CategoryModel.findByIdAndUpdate(
       { name },
       // TODO that could depends
       { $set: resource },
       { new: true }
     );
+
+    return category ? category.toObject() : null;
   }
 
   async deleteByName(name: string): Promise<boolean> {

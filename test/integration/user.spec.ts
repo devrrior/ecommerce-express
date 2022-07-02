@@ -1,6 +1,6 @@
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import mongoose from 'mongoose';
-import supertest from 'supertest';
+import request from 'supertest';
 
 import app from '../../src/config/app';
 import UserService from '../../src/services/user.service';
@@ -34,23 +34,23 @@ describe('/users', () => {
     await mongoose.connection.close();
   });
 
-  test('Create a user', async () => {
-    const { statusCode, body } = await supertest(app)
+  it('Create a user', async () => {
+    const { statusCode, body } = await request(app)
       .post('/api/v1/users')
-      .send(userPayload);
+      .send(userPayload)
+      .set('Accept', 'application/json');
 
     expect(statusCode).toBe(201);
     expect(body.firstName).toStrictEqual(userPayload.firstName);
   });
 
-
-  test('Get a user by id', async () => {
+  it('Get a user by id', async () => {
     await UserService.createOne(userPayload);
-    const { statusCode, body } = await supertest(app).get(`/api/v1/users/${userPayload._id}`);
+    const { statusCode, body } = await request(app).get(
+      `/api/v1/users/${userPayload._id}`
+    );
 
     expect(statusCode).toBe(200);
     expect(body.email).toStrictEqual(userPayload.email);
   });
-
-
 });

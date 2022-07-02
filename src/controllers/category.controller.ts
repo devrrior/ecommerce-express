@@ -1,23 +1,30 @@
 import { Request, Response } from 'express';
+import { omit } from 'lodash';
 
-import ICategory from '../interfaces/category.interface';
+import { categoryPrivateFields } from '../models/category.model';
 import { CreateCategoryType } from '../schemas/category.schema';
 import CategoryService from '../services/category.service';
 
-const listHandler = async (_: Request, res: Response) => {
-  const categories = await CategoryService.list(10, 0);
+const getListHandler = async (_: Request, res: Response) => {
+  const categories = await CategoryService.getList(10, 0);
 
-  res.status(200).send(categories);
+  const payload = categories.map(category => omit(category, categoryPrivateFields));
+
+  res.status(200).send(payload);
 };
 
 const getByNameHandler = async (req: Request, res: Response) => {
   const { name } = req.params;
 
-  const categoryResponse = await CategoryService.getByName(name);
+  const category = await CategoryService.getByName(name);
 
-  categoryResponse
-    ? res.status(200).send(categoryResponse)
-    : res.status(404).send();
+  if (category) {
+    const payload = omit(category, categoryPrivateFields);
+
+    res.status(200).send(payload);
+  }
+
+  res.status(404).send();
 };
 
 const createOneHandler = async (
@@ -30,31 +37,26 @@ const createOneHandler = async (
 ) => {
   const { name } = req.body;
 
-  const category: ICategory = {
-    name,
-  };
+  const category = await CategoryService.createOne({ name });
 
-  const categoryResponse = await CategoryService.createOne(category);
+  const payload = omit(category, categoryPrivateFields);
 
-  res.status(201).send(categoryResponse);
+  res.status(201).send(payload);
 };
 
 const updateOneHandler = async (req: Request, res: Response) => {
   const { name: nameParams } = req.params;
   const { name } = req.body;
 
-  const category: ICategory = {
-    name,
-  };
+  const category = await CategoryService.putByName(nameParams, { name });
 
-  const categoryResponse = await CategoryService.putByName(
-    nameParams,
-    category
-  );
+  if (category) {
+    const payload = omit(category, categoryPrivateFields);
 
-  categoryResponse
-    ? res.status(200).send(categoryResponse)
-    : res.status(404).send();
+    res.status(200).send(payload);
+  }
+
+  res.status(404).send();
 };
 
 const deleteOneHandler = async (req: Request, res: Response) => {
@@ -69,6 +71,6 @@ export {
   createOneHandler,
   deleteOneHandler,
   getByNameHandler,
-  listHandler,
+  getListHandler,
   updateOneHandler,
 };

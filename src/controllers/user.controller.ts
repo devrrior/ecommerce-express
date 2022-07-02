@@ -30,16 +30,16 @@ const createUserHandler = async (
   res.status(400).send();
 };
 
-const getUserByIdHandler = async ( req: Request, res: Response)=>{
+const getUserByIdHandler = async (req: Request, res: Response) => {
   const { id } = req.params;
 
   const userResponese = await UserService.getById(id);
 
-  if (userResponese){
+  if (userResponese) {
     res.status(200).send(userResponese);
   }
 
   res.status(404).send();
-}
+};
 
 export { createUserHandler, getUserByIdHandler };

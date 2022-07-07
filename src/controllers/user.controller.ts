@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
+import { omit } from 'lodash';
 
-import IUser from '../interfaces/user.interface';
+import { userPrivateFields } from '../models/user.model';
 import { CreateUserType } from '../schemas/user.schema';
 import UserService from '../services/user.service';
 
@@ -12,34 +13,38 @@ const createUserHandler = async (
   >,
   res: Response
 ) => {
-  const { email, password, firstName, lastName } = req.body;
+  const user = await UserService.createOne(req.body);
 
-  const user: IUser = {
-    email,
-    password,
-    firstName,
-    lastName,
-  };
-
-  const userResponese = await UserService.createOne(user);
-
-  if (userResponese) {
-    res.status(201).send(userResponese);
+  if (user) {
+    const payload = omit(user, userPrivateFields);
+    res.status(201).send(payload);
   }
 
   res.status(400).send();
 };
 
-const getUserByIdHandler = async (req: Request, res: Response) => {
-  const { id } = req.params;
+const getListUserHandler = async (_: Request, res: Response) => {
+  const users = await UserService.getList(5, 0);
 
-  const userResponese = await UserService.getById(id);
-
-  if (userResponese) {
-    res.status(200).send(userResponese);
+  if (users) {
+    const payload = users.map((user) => omit(user, userPrivateFields));
+    res.status(200).send(payload);
   }
 
   res.status(404).send();
 };
 
-export { createUserHandler, getUserByIdHandler };
+const getUserByIdHandler = async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  const user = await UserService.getById(id);
+
+  if (user) {
+    const payload = omit(user, userPrivateFields);
+    res.status(200).send(payload);
+  }
+
+  res.status(404).send();
+};
+
+export { createUserHandler, getListUserHandler, getUserByIdHandler };

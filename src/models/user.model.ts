@@ -12,6 +12,14 @@ import { nanoid } from 'nanoid';
 import IUser, { Role } from '../interfaces/user.interface';
 import logger from '../utils/logger';
 
+export const userPrivateFields = [
+  'password',
+  'verificationCode',
+  'verified',
+  'passwordResetCode',
+  '__v',
+];
+
 @pre<User>('save', async function () {
   if (!this.isModified('password')) {
     return;

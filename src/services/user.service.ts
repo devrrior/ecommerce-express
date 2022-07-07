@@ -12,32 +12,44 @@ class UserService
     ICreateActions<IUser>,
     IEditableByIdActions<IUser>
 {
-  async list(limit: number, page: number): Promise<IUser[]> {
-    return UserModel.find({}, null, {
+  async getList(limit: number, page: number): Promise<IUser[]> {
+    const users = await UserModel.find({}, null, {
       sort: { update_at: -1 },
       skip: limit * page,
       limit: limit,
     });
+
+    return users.map((user) => user.toObject());
   }
 
   async getById(id: string): Promise<IUser | null> {
-    return UserModel.findById(id);
+    const user = await UserModel.findById(id);
+
+    return user ? user.toObject() : null;
   }
 
   async createOne(resource: IUser): Promise<IUser> {
-    return UserModel.create(resource);
+    const user = await UserModel.create(resource);
+
+    return user.toObject();
   }
 
   async createMany(resources: IUser[]): Promise<IUser[]> {
-    return UserModel.create(resources);
+    const users = await UserModel.create(resources);
+
+    return users.map((user) => user.toObject());
   }
 
   async putById(id: string, resource: IUser): Promise<IUser | null> {
-    return UserModel.findByIdAndUpdate(id, resource, { new: true });
+    const user = await UserModel.findByIdAndUpdate(id, resource, { new: true });
+
+    return user ? user.toObject() : null;
   }
 
   async patchById(id: string, resource: Partial<IUser>): Promise<IUser | null> {
-    return UserModel.findByIdAndUpdate(id, resource, { new: true });
+    const user = await UserModel.findByIdAndUpdate(id, resource, { new: true });
+
+    return user ? user.toObject() : null;
   }
 
   async deleteById(id: string): Promise<boolean> {

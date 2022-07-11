@@ -39,7 +39,7 @@ export const userPrivateFields = [
     allowMixed: Severity.ALLOW,
   },
 })
-class User implements IUser {
+export class User implements IUser {
   @prop({ lowercase: true, required: true, unique: true })
   email: string;
 

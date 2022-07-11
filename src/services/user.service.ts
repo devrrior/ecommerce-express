@@ -1,5 +1,6 @@
 import ICreateActions from '../interfaces/createActions.interface';
 import IEditableByIdActions from '../interfaces/editableByIdActions.interface';
+import IGetByEmail from '../interfaces/getByEmailAction.interface';
 import IGetByIdAction from '../interfaces/getByIdAction.interface';
 import IListAction from '../interfaces/listAction.interface';
 import IUser from '../interfaces/user.interface';
@@ -9,6 +10,7 @@ class UserService
   implements
     IListAction<IUser>,
     IGetByIdAction<IUser>,
+    IGetByEmail<IUser>,
     ICreateActions<IUser>,
     IEditableByIdActions<IUser>
 {
@@ -24,6 +26,12 @@ class UserService
 
   async getById(id: string): Promise<IUser | null> {
     const user = await UserModel.findById(id);
+
+    return user ? user.toObject() : null;
+  }
+
+  async getByEmail(email: string): Promise<IUser | null> {
+    const user = await UserModel.findOne({ email });
 
     return user ? user.toObject() : null;
   }

@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { omit } from 'lodash';
 
+import IUser from '../interfaces/user.interface';
 import { userPrivateFields } from '../models/user.model';
 import { CreateUserType } from '../schemas/user.schema';
 import UserService from '../services/user.service';
@@ -13,7 +14,16 @@ const createUserHandler = async (
   >,
   res: Response
 ) => {
-  const user = await UserService.createOne(req.body);
+  const { email, password, firstName, lastName } = req.body;
+
+  const userData: IUser = {
+    email,
+    password,
+    firstName,
+    lastName,
+  };
+
+  const user = await UserService.createOne(userData);
 
   if (user) {
     const payload = omit(user, userPrivateFields);

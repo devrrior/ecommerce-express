@@ -1,4 +1,4 @@
-import logger from '../utils/logger';
+import logger from '../api/v1/utils/logger';
 import app from './app';
 import databaseConnect from './database';
 

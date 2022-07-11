@@ -1,17 +1,17 @@
 import 'dotenv/config';
 
-import express from 'express';
+import express, { json, urlencoded } from 'express';
 
-import morganMiddleware from '../middlewares/morgan.middleware';
-import routes from '../routes';
+import morganMiddleware from '../api/v1/middlewares/morgan.middleware';
+import routes from '../api/v1/routes';
 
 const app = express();
 
 app.set('port', process.env.PORT || 3000);
 
 // set middleware
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(json());
+app.use(urlencoded({ extended: true }));
 app.use(morganMiddleware);
 
 app.use(routes);

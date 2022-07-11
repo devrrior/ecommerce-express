@@ -2,8 +2,8 @@ import { MongoMemoryServer } from 'mongodb-memory-server';
 import mongoose from 'mongoose';
 import request from 'supertest';
 
+import CategoryService from '../../src/api/v1/services/category.service';
 import app from '../../src/config/app';
-import CategoryService from '../../src/services/category.service';
 
 const categoryPayload = {
   name: 'technology',

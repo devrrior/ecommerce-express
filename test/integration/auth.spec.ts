@@ -2,8 +2,8 @@ import { MongoMemoryServer } from 'mongodb-memory-server';
 import mongoose from 'mongoose';
 import supertest from 'supertest';
 
+import UserService from '../../src/api/v1/services/user.service';
 import app from '../../src/config/app';
-import UserService from '../../src/services/user.service';
 
 const userPayload = {
   email: 'devrrior@gmail.com',

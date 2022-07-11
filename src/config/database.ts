@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-import logger from '../utils/logger';
+import logger from '../api/v1/utils/logger';
 
 const databaseConnect = async () => {
   try {

@@ -3,7 +3,6 @@ import mongoose from 'mongoose';
 import request from 'supertest';
 
 import app from '../../src/config/app';
-import UserService from '../../src/services/user.service';
 
 const userPayload = {
   _id: new mongoose.Types.ObjectId().toString(),

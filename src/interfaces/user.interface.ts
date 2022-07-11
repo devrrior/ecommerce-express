@@ -1,6 +1,7 @@
 import IAddress from './address.interface';
 
 interface IUser {
+  _id?: string;
   email: string;
   password: string;
   firstName: string;

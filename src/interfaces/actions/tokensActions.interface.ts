@@ -1,5 +1,5 @@
-import ITokens from './tokens.interface';
-import IUser from './user.interface';
+import ITokens from '../models/tokens.interface';
+import IUser from '../models/user.interface';
 
 interface ITokensActions {
   createTokens: (user: Partial<IUser>) => Promise<ITokens>;

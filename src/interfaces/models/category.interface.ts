@@ -1,4 +1,4 @@
-import IProduct from './product.interface';
+import IProduct from '../product.interface';
 
 interface ICategory {
   _id?: string;

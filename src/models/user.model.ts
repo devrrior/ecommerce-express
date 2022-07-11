@@ -9,7 +9,7 @@ import {
 import argon2 from 'argon2';
 import { nanoid } from 'nanoid';
 
-import IUser, { Role } from '../interfaces/user.interface';
+import IUser, { Role } from '../interfaces/models/user.interface';
 import logger from '../utils/logger';
 
 export const userPrivateFields = [

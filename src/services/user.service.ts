@@ -1,9 +1,9 @@
-import ICreateActions from '../interfaces/createActions.interface';
-import IEditableByIdActions from '../interfaces/editableByIdActions.interface';
-import IGetByEmail from '../interfaces/getByEmailAction.interface';
-import IGetByIdAction from '../interfaces/getByIdAction.interface';
-import IListAction from '../interfaces/listAction.interface';
-import IUser from '../interfaces/user.interface';
+import ICreateActions from '../interfaces/actions/createActions.interface';
+import IEditableByIdActions from '../interfaces/actions/editableByIdActions.interface';
+import IGetByEmail from '../interfaces/actions/getByEmailAction.interface';
+import IGetByIdAction from '../interfaces/actions/getByIdAction.interface';
+import IListAction from '../interfaces/actions/listAction.interface';
+import IUser from '../interfaces/models/user.interface';
 import UserModel from '../models/user.model';
 
 class UserService

@@ -1,8 +1,8 @@
-import ICategory from '../interfaces/category.interface';
-import ICreateActions from '../interfaces/createActions.interface';
-import IEditableByNameActions from '../interfaces/editableByNameAction.interface';
-import IGetByNameAction from '../interfaces/getByNameAction.interface';
-import IListAction from '../interfaces/listAction.interface';
+import ICreateActions from '../interfaces/actions/createActions.interface';
+import IEditableByNameActions from '../interfaces/actions/editableByNameAction.interface';
+import IGetByNameAction from '../interfaces/actions/getByNameAction.interface';
+import IListAction from '../interfaces/actions/listAction.interface';
+import ICategory from '../interfaces/models/category.interface';
 import CategoryModel from '../models/category.model';
 
 class CategoryService

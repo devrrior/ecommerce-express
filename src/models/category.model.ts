@@ -1,6 +1,6 @@
 import { getModelForClass, prop } from '@typegoose/typegoose';
 
-import ICategory from '../interfaces/category.interface';
+import ICategory from '../interfaces/models/category.interface';
 
 export const categoryPrivateFields = ['__v'];
 

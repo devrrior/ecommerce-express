@@ -1,8 +1,8 @@
 import jwt from 'jsonwebtoken';
 
-import ITokens from '../interfaces/tokens.interface';
-import ITokensActions from '../interfaces/tokensActions.interface';
-import IUser from '../interfaces/user.interface';
+import ITokensActions from '../interfaces/actions/tokensActions.interface';
+import ITokens from '../interfaces/models/tokens.interface';
+import IUser from '../interfaces/models/user.interface';
 import SessionModel from '../models/session.model';
 
 class AuthService implements ITokensActions {

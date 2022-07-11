@@ -5,7 +5,7 @@ import {
   Ref,
 } from '@typegoose/typegoose';
 
-import ISession from '../interfaces/session.interface';
+import ISession from '../interfaces/models/session.interface';
 import { User } from './user.model';
 
 @modelOptions({

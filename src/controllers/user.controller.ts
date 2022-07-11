@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { omit } from 'lodash';
 
-import IUser from '../interfaces/user.interface';
+import IUser from '../interfaces/models/user.interface';
 import { userPrivateFields } from '../models/user.model';
 import { CreateUserType } from '../schemas/user.schema';
 import UserService from '../services/user.service';

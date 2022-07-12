@@ -3,9 +3,11 @@ import { Request, Response } from 'express';
 import { omit } from 'lodash';
 
 import { userPrivateFields } from '../models/user.model';
-import { CreateTokensType } from '../schemas/auth.schema';
+import { CreateTokensType, RefreshTokensType } from '../schemas/auth.schema';
 import AuthService from '../services/auth.service';
+import SessionService from '../services/session.service';
 import UserService from '../services/user.service';
+import { verifyJWT } from '../utils/jwt';
 
 const createTokensHandler = async (
   req: Request<
@@ -35,4 +37,40 @@ const createTokensHandler = async (
   res.status(401).send();
 };
 
-export { createTokensHandler };
+const refreshAccessTokensHandler = async (
+  req: Request<
+    Record<string, unknown>,
+    Record<string, unknown>,
+    RefreshTokensType
+  >,
+  res: Response
+) => {
+  const { refresh } = req.body;
+
+  const decoded = verifyJWT<{ session: string }>(refresh, 'refresh');
+
+  if (!decoded) return res.status(401).send('Could not refresh access token');
+
+  const session = await SessionService.getById(decoded.session);
+
+  if (!session || !session.valid)
+    return res.status(401).send('Could not refresh access token');
+
+  await SessionService.patchById(session._id as string, { valid: false });
+
+  const user = await UserService.getById(String(session.user));
+
+  if (!user) return res.status(401).send('Could not refresh access token');
+
+  const userPayload = omit(user, [
+    ...userPrivateFields,
+    'createdAt',
+    'updatedAt',
+  ]);
+
+  const tokens = await AuthService.createTokens(userPayload);
+
+  return res.status(201).send(tokens);
+};
+
+export { createTokensHandler, refreshAccessTokensHandler };

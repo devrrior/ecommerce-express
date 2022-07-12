@@ -1,6 +1,6 @@
 import ICreateActions from '../interfaces/actions/createActions.interface';
 import IEditableByIdActions from '../interfaces/actions/editableByIdActions.interface';
-import IGetByEmail from '../interfaces/actions/getByEmailAction.interface';
+import IGetByEmailAction from '../interfaces/actions/getByEmailAction.interface';
 import IGetByIdAction from '../interfaces/actions/getByIdAction.interface';
 import IListAction from '../interfaces/actions/listAction.interface';
 import IUser from '../interfaces/models/user.interface';
@@ -10,7 +10,7 @@ class UserService
   implements
     IListAction<IUser>,
     IGetByIdAction<IUser>,
-    IGetByEmail<IUser>,
+    IGetByEmailAction<IUser>,
     ICreateActions<IUser>,
     IEditableByIdActions<IUser>
 {

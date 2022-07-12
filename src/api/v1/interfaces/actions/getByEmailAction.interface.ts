@@ -1,5 +1,5 @@
-interface IGetByEmail<T> {
+interface IGetByEmailAction<T> {
   getByEmail: (emai: string) => Promise<T | null>;
 }
 
-export default IGetByEmail;
+export default IGetByEmailAction;

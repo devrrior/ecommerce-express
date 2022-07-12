@@ -44,4 +44,19 @@ describe('/tokens', () => {
 
     expect(statusCode).toBe(201);
   });
+
+  test('Refresh tokens', async () => {
+    await UserService.createOne(userPayload);
+    const { statusCode: generateStatusCode, body } = await supertest(app)
+      .post('/api/v1/auth/token')
+      .send({ email: userPayload.email, password: userPayload.password });
+
+    expect(generateStatusCode).toBe(201);
+
+    const { statusCode } = await supertest(app)
+      .post('/api/v1/auth/token/refresh')
+      .send({ refresh: body.refresh });
+
+    expect(statusCode).toBe(201);
+  });
 });

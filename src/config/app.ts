@@ -2,6 +2,7 @@ import 'dotenv/config';
 
 import express, { json, urlencoded } from 'express';
 
+import deserializeUser from '../api/v1/middlewares/deserializeUser';
 import morganMiddleware from '../api/v1/middlewares/morgan.middleware';
 import routes from '../api/v1/routes';
 
@@ -12,6 +13,7 @@ app.set('port', process.env.PORT || 3000);
 // set middleware
 app.use(json());
 app.use(urlencoded({ extended: true }));
+app.use(deserializeUser);
 app.use(morganMiddleware);
 
 app.use(routes);

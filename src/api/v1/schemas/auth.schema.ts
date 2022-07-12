@@ -10,4 +10,11 @@ export const CreateTokensSchema = z.object({
   }),
 });
 
+export const RefreshTokensSchema = z.object({
+  body: z.object({
+    refresh: z.string({ required_error: 'Refresh token is required' }).min(1),
+  }),
+});
+
 export type CreateTokensType = z.infer<typeof CreateTokensSchema>['body'];
+export type RefreshTokensType = z.infer<typeof RefreshTokensSchema>['body'];

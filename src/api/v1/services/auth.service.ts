@@ -19,7 +19,7 @@ class AuthService implements ITokensActions {
     const ACCESS_TOKEN_SECRET_KEY =
       process.env.ACCESS_TOKEN_SECRET_KEY || '1234';
 
-    return jwt.sign(user, ACCESS_TOKEN_SECRET_KEY);
+    return jwt.sign(user, ACCESS_TOKEN_SECRET_KEY, { expiresIn: '5m' });
   }
 
   async createRefreshToken(user: Partial<IUser>): Promise<string> {
@@ -28,7 +28,9 @@ class AuthService implements ITokensActions {
     const REFRESH_TOKEN_SECRET_KEY =
       process.env.REFRESH_TOKEN_SECRET_KEY || '1234';
 
-    return jwt.sign({ session: session._id }, REFRESH_TOKEN_SECRET_KEY);
+    return jwt.sign({ session: session._id }, REFRESH_TOKEN_SECRET_KEY, {
+      expiresIn: '1d',
+    });
   }
 }
 

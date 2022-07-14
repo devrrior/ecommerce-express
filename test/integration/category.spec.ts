@@ -3,7 +3,17 @@ import mongoose from 'mongoose';
 import request from 'supertest';
 
 import CategoryService from '../../src/api/v1/services/category.service';
+import UserService from '../../src/api/v1/services/user.service';
 import app from '../../src/config/app';
+
+const userPayload = {
+  _id: new mongoose.Types.ObjectId().toString(),
+  email: 'devrrior@gmail.com',
+  password: 'fernando123',
+  passwordConfirmation: 'fernando123',
+  firstName: 'Fernando',
+  lastName: 'Guerrero',
+};
 
 const categoryPayload = {
   name: 'technology',
@@ -42,8 +52,17 @@ describe('/categories', () => {
 
   // POST /categories
   it('Create a category', async () => {
+    await UserService.createOne(userPayload);
+
+    const { statusCode: tokenStatusCode, body: tokenBody } = await request(app)
+      .post(`${baseUrl}/auth/token`)
+      .send({ email: userPayload.email, password: userPayload.password });
+
+    expect(tokenStatusCode).toBe(201);
+
     const { statusCode, body } = await request(app)
       .post(`${baseUrl}/categories`)
+      .set('Authorization', 'Bearer ' + tokenBody.access)
       .send(categoryPayload);
 
     expect(statusCode).toBe(201);
@@ -63,6 +82,8 @@ describe('/categories', () => {
     expect(body[0].name).toStrictEqual(responseCategoryService[0].name);
     expect(body[1].name).toStrictEqual(responseCategoryService[1].name);
   });
+
+  // TODO: Admin User just can create, update and delete category
 
   // GET /categories/{id}
   it('Find category by id', async () => {

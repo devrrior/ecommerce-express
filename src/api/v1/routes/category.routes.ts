@@ -7,6 +7,7 @@ import {
   getListHandler,
   updateOneHandler,
 } from '../controllers/category.controller';
+import requireAuthMiddleware from '../middlewares/requireAuth.middleware';
 import validateResource from '../middlewares/validateResource.middleware';
 import { CreateCategorySchema } from '../schemas/category.schema';
 
@@ -14,7 +15,12 @@ const router = Router();
 
 router.get('', getListHandler);
 router.get('/:name', getByNameHandler);
-router.post('', validateResource(CreateCategorySchema), createOneHandler);
+router.post(
+  '',
+  requireAuthMiddleware,
+  validateResource(CreateCategorySchema),
+  createOneHandler
+);
 router.put('/:name', updateOneHandler);
 router.delete('/:name', deleteOneHandler);
 

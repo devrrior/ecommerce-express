@@ -61,7 +61,7 @@ export class User implements IUser {
   @prop({ default: false })
   verified: boolean;
 
-  @prop({ default: Role.customer })
+  @prop({ enum: Role, default: Role.CUSTOMER })
   role: Role;
 
   async validatePassword(this: DocumentType<User>, candidatePassword: string) {

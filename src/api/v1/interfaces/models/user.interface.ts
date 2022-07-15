@@ -12,8 +12,8 @@ interface IUser {
 }
 
 export enum Role {
-  admin,
-  customer,
+  ADMIN = 'admin',
+  CUSTOMER = 'customer',
 }
 
 export default IUser;

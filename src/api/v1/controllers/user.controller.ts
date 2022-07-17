@@ -1,3 +1,4 @@
+import argon2 from 'argon2';
 import { Request, Response } from 'express';
 import { omit } from 'lodash';
 
@@ -22,6 +23,10 @@ const createUserHandler = async (
     firstName,
     lastName,
   };
+
+  const hashPassword = await argon2.hash(userData.password);
+
+  userData.password = hashPassword;
 
   const user = await UserService.createOne(userData);
 

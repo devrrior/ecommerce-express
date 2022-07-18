@@ -4,9 +4,11 @@ interface IUser {
   _id?: string;
   email: string;
   password: string;
+  passwordResetCode: string | null;
   firstName: string;
   lastName: string;
-  verified?: boolean;
+  verified: boolean;
+  verificationCode: string;
   role?: Role;
   addresses?: IAddress[];
 }

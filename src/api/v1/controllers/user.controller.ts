@@ -17,12 +17,13 @@ const createUserHandler = async (
 ) => {
   const { email, password, firstName, lastName } = req.body;
 
-  const userData: IUser = {
-    email,
-    password,
-    firstName,
-    lastName,
-  };
+  const userData: Pick<IUser, 'email' | 'password' | 'firstName' | 'lastName'> =
+    {
+      email,
+      password,
+      firstName,
+      lastName,
+    };
 
   const hashPassword = await argon2.hash(userData.password);
 

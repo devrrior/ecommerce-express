@@ -36,7 +36,7 @@ class UserService
     return user ? user.toObject() : null;
   }
 
-  async createOne(resource: IUser): Promise<IUser> {
+  async createOne(resource: Partial<IUser>): Promise<IUser> {
     const user = await UserModel.create(resource);
 
     return user.toObject();

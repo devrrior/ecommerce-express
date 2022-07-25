@@ -8,6 +8,7 @@ import {
   updateOneHandler,
 } from '../controllers/category.controller';
 import requireAuthMiddleware from '../middlewares/requireAuth.middleware';
+import restrictTo from '../middlewares/restrictTo.middleware';
 import validateResource from '../middlewares/validateResource.middleware';
 import { CreateCategorySchema } from '../schemas/category.schema';
 
@@ -18,10 +19,21 @@ router.get('/:name', getByNameHandler);
 router.post(
   '',
   requireAuthMiddleware,
+  restrictTo('admin'),
   validateResource(CreateCategorySchema),
   createOneHandler
 );
-router.put('/:name', updateOneHandler);
-router.delete('/:name', deleteOneHandler);
+router.put(
+  '/:name',
+  requireAuthMiddleware,
+  restrictTo('admin'),
+  updateOneHandler
+);
+router.delete(
+  '/:name',
+  requireAuthMiddleware,
+  restrictTo('admin'),
+  deleteOneHandler
+);
 
 export default router;

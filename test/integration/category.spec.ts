@@ -9,12 +9,17 @@ import CategoryService from '../../src/api/v1/services/category.service';
 import UserService from '../../src/api/v1/services/user.service';
 import app from '../../src/config/app';
 
-const userPayload = {
-  _id: new mongoose.Types.ObjectId().toString(),
+const userPayloadAdmin = {
   email: 'devrrior@gmail.com',
   password: 'fernando123',
-  passwordConfirmation: 'fernando123',
   role: Role.ADMIN,
+  firstName: 'Fernando',
+  lastName: 'Guerrero',
+};
+
+const userPayloadCustomer = {
+  email: 'fer@gmail.com',
+  password: 'fernando123',
   firstName: 'Fernando',
   lastName: 'Guerrero',
 };
@@ -38,7 +43,7 @@ const categoriesPayload = [
 
 const baseUrl = '/api/v1';
 
-let tokens: ITokens;
+let tokensAdmin: ITokens, tokensCustomer: ITokens;
 
 describe('/categories', () => {
   beforeAll(async () => {
@@ -48,17 +53,34 @@ describe('/categories', () => {
     await mongoose.connect(mongoServer.getUri());
 
     await UserService.createOne({
-      ...userPayload,
-      password: await argon2.hash(userPayload.password),
+      ...userPayloadAdmin,
+      password: await argon2.hash(userPayloadAdmin.password),
     });
 
     await CategoryService.createMany(categoriesPayload);
 
-    const { body } = await request(app)
+    const { body: bodyAdmin } = await request(app)
       .post(`${baseUrl}/auth/token`)
-      .send({ email: userPayload.email, password: userPayload.password });
+      .send({
+        email: userPayloadAdmin.email,
+        password: userPayloadAdmin.password,
+      });
 
-    tokens = body;
+    tokensAdmin = bodyAdmin;
+
+    await UserService.createOne({
+      ...userPayloadCustomer,
+      password: await argon2.hash(userPayloadCustomer.password),
+    });
+
+    const { body: bodyCustomer } = await request(app)
+      .post(`${baseUrl}/auth/token`)
+      .send({
+        email: userPayloadCustomer.email,
+        password: userPayloadCustomer.password,
+      });
+
+    tokensCustomer = bodyCustomer;
   });
 
   afterAll(async () => {
@@ -67,14 +89,23 @@ describe('/categories', () => {
   });
 
   // POST /categories
-  it('Create a category', async () => {
+  it('Create a category successfully', async () => {
     const { statusCode, body } = await request(app)
       .post(`${baseUrl}/categories`)
-      .set('Authorization', 'Bearer ' + tokens.access)
+      .set('Authorization', 'Bearer ' + tokensAdmin.access)
       .send(categoryPayload);
 
     expect(statusCode).toBe(201);
     expect(body.name).toStrictEqual(categoryPayload.name);
+  });
+
+  it('Create a category failed', async () => {
+    const { statusCode } = await request(app)
+      .post(`${baseUrl}/categories`)
+      .set('Authorization', 'Bearer ' + tokensCustomer.access)
+      .send(categoryPayload);
+
+    expect(statusCode).toBe(401);
   });
 
   // GET /categories
@@ -99,22 +130,39 @@ describe('/categories', () => {
   });
 
   // PUT /categories/{id}
-  it('Update whole category', async () => {
+  it('Update whole category successfully', async () => {
     const { statusCode, body } = await request(app)
       .put(`${baseUrl}/categories/${categoryPayload.name}`)
-      .set('Authorization', 'Bearer ' + tokens.access)
+      .set('Authorization', 'Bearer ' + tokensAdmin.access)
       .send(updateCategoryPayload);
 
     expect(statusCode).toBe(200);
     expect(body.name).toStrictEqual(updateCategoryPayload.name);
   });
 
+  it('Update whole category failed', async () => {
+    const { statusCode } = await request(app)
+      .put(`${baseUrl}/categories/${categoryPayload.name}`)
+      .set('Authorization', 'Bearer ' + tokensCustomer.access)
+      .send(updateCategoryPayload);
+
+    expect(statusCode).toBe(401);
+  });
+
   // DELETE /categories/{id}
-  it('Delete category', async () => {
+  it('Delete category successfully', async () => {
     const { statusCode } = await request(app)
       .delete(`${baseUrl}/categories/${updateCategoryPayload.name}`)
-      .set('Authorization', 'Bearer ' + tokens.access);
+      .set('Authorization', 'Bearer ' + tokensAdmin.access);
 
     expect(statusCode).toBe(204);
+  });
+
+  it('Delete category failed', async () => {
+    const { statusCode } = await request(app)
+      .delete(`${baseUrl}/categories/${updateCategoryPayload.name}`)
+      .set('Authorization', 'Bearer ' + tokensCustomer.access);
+
+    expect(statusCode).toBe(401);
   });
 });

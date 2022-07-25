@@ -21,20 +21,21 @@ const createTokensHandler = async (
 
   const user = await UserService.getByEmail(email);
 
-  if (user) {
-    const isValidPassword = await argon2.verify(user.password, password);
-    if (isValidPassword) {
-      const userPayload = omit(user, [
-        ...userPrivateFields,
-        'createdAt',
-        'updatedAt',
-      ]);
-      const tokens = await AuthService.createTokens(userPayload);
+  if (!user) return res.status(401).send();
 
-      res.status(201).send(tokens);
-    }
-  }
-  res.status(401).send();
+  const isValidPassword = await argon2.verify(user.password, password);
+
+  if (!isValidPassword) return res.status(401).send();
+
+  const userPayload = omit(user, [
+    ...userPrivateFields,
+    'createdAt',
+    'updatedAt',
+  ]);
+
+  const tokens = await AuthService.createTokens(userPayload);
+
+  return res.status(201).send(tokens);
 };
 
 const refreshAccessTokensHandler = async (

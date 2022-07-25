@@ -1,8 +1,7 @@
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import mongoose from 'mongoose';
-import supertest from 'supertest';
+import request from 'supertest';
 
-import UserService from '../../src/api/v1/services/user.service';
 import app from '../../src/config/app';
 
 const userPayload = {
@@ -19,13 +18,8 @@ describe('/tokens', () => {
     const mongoServer = await MongoMemoryServer.create();
 
     await mongoose.connect(mongoServer.getUri());
-  });
 
-  afterEach(async () => {
-    const collections = await mongoose.connection.db.collections();
-    for (const connection of collections) {
-      await connection.deleteMany({});
-    }
+    await request(app).post('/api/v1/users').send(userPayload);
   });
 
   afterAll(async () => {
@@ -34,26 +28,22 @@ describe('/tokens', () => {
   });
 
   test('Generate JWT', async () => {
-    await UserService.createOne(userPayload);
-    const { statusCode } = await supertest(app)
-      .post('/api/v1/auth/token')
-      .send({
-        email: userPayload.email,
-        password: userPayload.password,
-      });
+    const { statusCode } = await request(app).post('/api/v1/auth/token').send({
+      email: userPayload.email,
+      password: userPayload.password,
+    });
 
     expect(statusCode).toBe(201);
   });
 
   test('Refresh tokens', async () => {
-    await UserService.createOne(userPayload);
-    const { statusCode: generateStatusCode, body } = await supertest(app)
+    const { statusCode: generateStatusCode, body } = await request(app)
       .post('/api/v1/auth/token')
       .send({ email: userPayload.email, password: userPayload.password });
 
     expect(generateStatusCode).toBe(201);
 
-    const { statusCode } = await supertest(app)
+    const { statusCode } = await request(app)
       .post('/api/v1/auth/token/refresh')
       .send({ refresh: body.refresh });
 

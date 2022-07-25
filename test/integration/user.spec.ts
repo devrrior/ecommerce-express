@@ -29,11 +29,6 @@ describe('/users', () => {
     }
   });
 
-  afterAll(async () => {
-    await mongoose.disconnect();
-    await mongoose.connection.close();
-  });
-
   it('Create a user', async () => {
     const { statusCode, body } = await request(app)
       .post('/api/v1/users')

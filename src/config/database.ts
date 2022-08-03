@@ -13,7 +13,6 @@ const databaseConnect = async () => {
     );
   } catch (err) {
     logger.error(err);
-    throw new Error('Error at the start of the database');
   }
 };
 

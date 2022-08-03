@@ -1,4 +1,5 @@
 import logger from '../api/v1/utils/logger';
+import swaggerDocs from '../api/v1/utils/swagger';
 import app from './app';
 import databaseConnect from './database';
 
@@ -11,6 +12,7 @@ const server = app.listen(app.get('port'), () => {
     )} mode`
   );
 
+  swaggerDocs(app, app.get('port'));
   logger.info('Press CTRL-C to stop\n');
 });
 

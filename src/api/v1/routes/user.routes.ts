@@ -2,9 +2,11 @@ import { Router } from 'express';
 
 import {
   createUserHandler,
+  getCurrentUserHandler,
   getListUserHandler,
   getUserByIdHandler,
 } from '../controllers/user.controller';
+import requireAuthMiddleware from '../middlewares/requireAuth.middleware';
 import validateResource from '../middlewares/validateResource.middleware';
 import { CreateUserSchema } from '../schemas/user.schema';
 
@@ -17,13 +19,12 @@ const router = Router();
  *    tags:
  *      - Users
  *    description: Create user
- *    parameters:
- *      - name: body
- *        in: body
- *        description: Create user request
- *        required: true
- *        schema:
- *          $ref: '#/components/schemas/CreateUserInput'
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            $ref: '#/components/schemas/CreateUserInput'
  *    responses:
  *      201:
  *        description: Create user response
@@ -54,6 +55,27 @@ router.post('', validateResource(CreateUserSchema), createUserHandler);
  *                $ref: '#/components/schemas/CreateUserResponse'
  */
 router.get('', getListUserHandler);
+
+/**
+ * @openapi
+ * /api/v1/users/me:
+ *  get:
+ *    tags:
+ *      - Users
+ *    description: Get current user
+ *    security:
+ *      - bearerAuth: []
+ *    responses:
+ *      200:
+ *        description: A user
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/CreateUserResponse'
+ *      401:
+ *        description: Unauthorized
+ */
+router.get('/me', requireAuthMiddleware, getCurrentUserHandler);
 
 /**
  * @openapi

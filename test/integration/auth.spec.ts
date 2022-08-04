@@ -28,7 +28,7 @@ describe('/tokens', () => {
   });
 
   test('Generate JWT', async () => {
-    const { statusCode } = await request(app).post('/api/v1/auth/token').send({
+    const { statusCode } = await request(app).post('/api/v1/auth/tokens').send({
       email: userPayload.email,
       password: userPayload.password,
     });
@@ -38,13 +38,13 @@ describe('/tokens', () => {
 
   test('Refresh tokens', async () => {
     const { statusCode: generateStatusCode, body } = await request(app)
-      .post('/api/v1/auth/token')
+      .post('/api/v1/auth/tokens')
       .send({ email: userPayload.email, password: userPayload.password });
 
     expect(generateStatusCode).toBe(201);
 
     const { statusCode } = await request(app)
-      .post('/api/v1/auth/token/refresh')
+      .post('/api/v1/auth/tokens/refresh')
       .send({ refresh: body.refresh });
 
     expect(statusCode).toBe(201);

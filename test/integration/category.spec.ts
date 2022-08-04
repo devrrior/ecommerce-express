@@ -60,7 +60,7 @@ describe('/categories', () => {
     await CategoryService.createMany(categoriesPayload);
 
     const { body: bodyAdmin } = await request(app)
-      .post(`${baseUrl}/auth/token`)
+      .post(`${baseUrl}/auth/tokens`)
       .send({
         email: userPayloadAdmin.email,
         password: userPayloadAdmin.password,

@@ -33,10 +33,10 @@ const createUserHandler = async (
 
   if (user) {
     const payload = omit(user, userPrivateFields);
-    res.status(201).send(payload);
+    return res.status(201).send(payload);
   }
 
-  res.status(400).send();
+  return res.status(400).send();
 };
 
 const getListUserHandler = async (_: Request, res: Response) => {
@@ -44,23 +44,34 @@ const getListUserHandler = async (_: Request, res: Response) => {
 
   if (users) {
     const payload = users.map((user) => omit(user, userPrivateFields));
-    res.status(200).send(payload);
+    return res.status(200).send(payload);
   }
 
-  res.status(404).send();
+  return res.status(404).send();
 };
 
 const getUserByIdHandler = async (req: Request, res: Response) => {
   const { id } = req.params;
 
+  if (!id.match(/^[0-9a-fA-F]{24}$/)) return res.status(400).send();
+
   const user = await UserService.getById(id);
 
-  if (user) {
-    const payload = omit(user, userPrivateFields);
-    res.status(200).send(payload);
-  }
+  if (!user) return res.status(404).send();
 
-  res.status(404).send();
+  const payload = omit(user, userPrivateFields);
+  return res.status(200).send(payload);
 };
 
-export { createUserHandler, getListUserHandler, getUserByIdHandler };
+const getCurrentUserHandler = async (_: Request, res: Response) => {
+  const user = res.locals.user;
+
+  return res.status(200).send(omit(user, userPrivateFields));
+};
+
+export {
+  createUserHandler,
+  getCurrentUserHandler,
+  getListUserHandler,
+  getUserByIdHandler,
+};

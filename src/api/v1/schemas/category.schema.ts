@@ -1,5 +1,28 @@
 import { z } from 'zod';
 
+/**
+ * @openapi
+ * components:
+ *  schemas:
+ *    CreateCategoryInput:
+ *      type: object
+ *      required:
+ *        - name
+ *      properties:
+ *        name:
+ *          type: string
+ *          description: Name of the category
+ *          example: "Clothes"
+ *
+ *    CreateCategoryResponse:
+ *      type: object
+ *      properties:
+ *        name:
+ *          type: string
+ *          description: Name of the category
+ *          example: "Clothes"
+ */
+
 export const CreateCategorySchema = z.object({
   body: z.object({
     name: z

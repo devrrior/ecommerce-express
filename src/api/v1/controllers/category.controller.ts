@@ -12,7 +12,7 @@ const getListHandler = async (_: Request, res: Response) => {
     omit(category, categoryPrivateFields)
   );
 
-  res.status(200).send(payload);
+  return res.status(200).send(payload);
 };
 
 const getByNameHandler = async (req: Request, res: Response) => {
@@ -23,10 +23,10 @@ const getByNameHandler = async (req: Request, res: Response) => {
   if (category) {
     const payload = omit(category, categoryPrivateFields);
 
-    res.status(200).send(payload);
+    return res.status(200).send(payload);
   }
 
-  res.status(404).send();
+  return res.status(404).send();
 };
 
 const createOneHandler = async (
@@ -43,7 +43,7 @@ const createOneHandler = async (
 
   const payload = omit(category, categoryPrivateFields);
 
-  res.status(201).send(payload);
+  return res.status(201).send(payload);
 };
 
 const updateOneHandler = async (req: Request, res: Response) => {
@@ -55,10 +55,10 @@ const updateOneHandler = async (req: Request, res: Response) => {
   if (category) {
     const payload = omit(category, categoryPrivateFields);
 
-    res.status(200).send(payload);
+    return res.status(200).send(payload);
   }
 
-  res.status(404).send();
+  return res.status(404).send();
 };
 
 const deleteOneHandler = async (req: Request, res: Response) => {
@@ -66,7 +66,7 @@ const deleteOneHandler = async (req: Request, res: Response) => {
 
   const response = await CategoryService.deleteByName(name);
 
-  response ? res.status(204).send() : res.status(404).send();
+  return response ? res.status(204).send() : res.status(404).send();
 };
 
 export {

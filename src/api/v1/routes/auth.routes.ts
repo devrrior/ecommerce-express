@@ -19,13 +19,12 @@ const router = Router();
  *    tags:
  *      - Auth
  *    description: Create tokens
- *    parameters:
- *      - name: body
- *        in: body
- *        description: Create tokens request
- *        required: true
- *        schema:
- *          $ref: '#/components/schemas/CreateTokensInput'
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            $ref: '#/components/schemas/CreateTokensInput'
  *    responses:
  *      201:
  *        description: Create tokens response
@@ -37,7 +36,7 @@ const router = Router();
  *        description: Unauthorized
  */
 router.post(
-  '/token',
+  '/tokens',
   validateResource(CreateTokensSchema),
   createTokensHandler
 );
@@ -49,13 +48,12 @@ router.post(
  *    tags:
  *      - Auth
  *    description: Refresh access tokens
- *    parameters:
- *      - name: body
- *        in: body
- *        description: Refresh access tokens request
- *        required: true
- *        schema:
- *          $ref: '#/components/schemas/RefreshTokensInput'
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            $ref: '#/components/schemas/RefreshTokensInput'
  *    responses:
  *      201:
  *        description: Refresh access tokens response
@@ -65,7 +63,7 @@ router.post(
  *              $ref: '#/components/schemas/CreateTokensResponse'
  */
 router.post(
-  '/token/refresh',
+  '/tokens/refresh',
   validateResource(RefreshTokensSchema),
   refreshAccessTokensHandler
 );

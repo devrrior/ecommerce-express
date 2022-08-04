@@ -69,13 +69,12 @@ router.get('/:name', getByNameHandler);
  *    description: Create a category
  *    security:
  *      - bearerAuth: []
- *    parameters:
- *      - name: body
- *        in: body
- *        description: Category to create
- *        required: true
- *        schema:
- *          $ref: '#/components/schemas/CreateCategoryInput'
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            $ref: '#/components/schemas/CreateCategoryInput'
  *    responses:
  *      201:
  *        description: Category created
@@ -115,12 +114,12 @@ router.post(
  *        schema:
  *          type: string
  *          example: "Clothes"
- *      - name: body
- *        in: body
- *        description: Category to update
- *        required: true
- *        schema:
- *          $ref: '#/components/schemas/CreateCategoryInput'
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            $ref: '#/components/schemas/CreateCategoryInput'
  *    responses:
  *      200:
  *        description: Category updated

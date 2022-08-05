@@ -1,11 +1,11 @@
 import { Router } from 'express';
 
 import {
-  createOneHandler,
-  deleteOneHandler,
-  getByNameHandler,
-  getListHandler,
-  updateOneHandler,
+  createCategoryHandler,
+  deleteCategoryHandler,
+  getCategoryByNameHandler,
+  getListCategoryHandler,
+  updateCategoryHandler,
 } from '../controllers/category.controller';
 import requireAuthMiddleware from '../middlewares/requireAuth.middleware';
 import restrictTo from '../middlewares/restrictTo.middleware';
@@ -31,7 +31,7 @@ const router = Router();
  *              items:
  *                $ref: '#/components/schemas/CreateCategoryResponse'
  */
-router.get('', getListHandler);
+router.get('', getListCategoryHandler);
 
 /**
  * @openapi
@@ -58,7 +58,7 @@ router.get('', getListHandler);
  *      404:
  *        description: Category not found
  */
-router.get('/:name', getByNameHandler);
+router.get('/:name', getCategoryByNameHandler);
 
 /**
  * @openapi
@@ -94,7 +94,7 @@ router.post(
   requireAuthMiddleware,
   restrictTo('admin'),
   validateResource(CreateCategorySchema),
-  createOneHandler
+  createCategoryHandler
 );
 
 /**
@@ -140,7 +140,7 @@ router.put(
   '/:name',
   requireAuthMiddleware,
   restrictTo('admin'),
-  updateOneHandler
+  updateCategoryHandler
 );
 
 /**
@@ -174,7 +174,7 @@ router.delete(
   '/:name',
   requireAuthMiddleware,
   restrictTo('admin'),
-  deleteOneHandler
+  deleteCategoryHandler
 );
 
 export default router;

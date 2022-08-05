@@ -5,7 +5,7 @@ import { categoryPrivateFields } from '../models/category.model';
 import { CreateCategoryType } from '../schemas/category.schema';
 import CategoryService from '../services/category.service';
 
-const getListHandler = async (_: Request, res: Response) => {
+const getListCategoryHandler = async (_: Request, res: Response) => {
   const categories = await CategoryService.getList(10, 0);
 
   const payload = categories.map((category) =>
@@ -15,7 +15,7 @@ const getListHandler = async (_: Request, res: Response) => {
   return res.status(200).send(payload);
 };
 
-const getByNameHandler = async (req: Request, res: Response) => {
+const getCategoryByNameHandler = async (req: Request, res: Response) => {
   const { name } = req.params;
 
   const category = await CategoryService.getByName(name);
@@ -29,7 +29,7 @@ const getByNameHandler = async (req: Request, res: Response) => {
   return res.status(404).send();
 };
 
-const createOneHandler = async (
+const createCategoryHandler = async (
   req: Request<
     Record<string, unknown>,
     Record<string, unknown>,
@@ -46,7 +46,7 @@ const createOneHandler = async (
   return res.status(201).send(payload);
 };
 
-const updateOneHandler = async (req: Request, res: Response) => {
+const updateCategoryHandler = async (req: Request, res: Response) => {
   const { name: nameParams } = req.params;
   const { name } = req.body;
 
@@ -61,7 +61,7 @@ const updateOneHandler = async (req: Request, res: Response) => {
   return res.status(404).send();
 };
 
-const deleteOneHandler = async (req: Request, res: Response) => {
+const deleteCategoryHandler = async (req: Request, res: Response) => {
   const { name } = req.params;
 
   const response = await CategoryService.deleteByName(name);
@@ -70,9 +70,9 @@ const deleteOneHandler = async (req: Request, res: Response) => {
 };
 
 export {
-  createOneHandler,
-  deleteOneHandler,
-  getByNameHandler,
-  getListHandler,
-  updateOneHandler,
+  createCategoryHandler,
+  deleteCategoryHandler,
+  getCategoryByNameHandler,
+  getListCategoryHandler,
+  updateCategoryHandler,
 };

@@ -148,7 +148,48 @@ export const UpdateUserSchema = z.object({
   }),
 });
 
+export const VerifyUserSchema = z.object({
+  params: z.object({
+    token: z.string({ required_error: 'Token is required' }),
+  }),
+});
+
+export const ForgotPasswordSchema = z.object({
+  body: z.object({
+    email: z
+      .string({ required_error: 'Email is required' })
+      .email('Not a valid email'),
+  }),
+});
+
+export const ResetPasswordSchema = z.object({
+  params: z.object({
+    token: z.string({ required_error: 'Token is required' }),
+  }),
+  body: z
+    .object({
+      newPassword: z
+        .string({ required_error: 'Password is required' })
+        .min(6, 'Password is too shor - Should be min 6 chars'),
+      newPasswordConfirmation: z.string({
+        required_error: 'Password is required',
+      }),
+    })
+    .refine((data) => data.newPassword === data.newPasswordConfirmation, {
+      message: 'Password do not match',
+      path: ['newPasswordConfirmation'],
+    }),
+});
+
 export type CreateUserBodyType = z.infer<typeof CreateUserSchema>['body'];
 export type UserIdParamsType = z.infer<typeof UserIdSchema>['params'];
 export type UpdateUserBodyType = z.infer<typeof UpdateUserSchema>['body'];
 export type UpdateUserParamsType = z.infer<typeof UpdateUserSchema>['params'];
+export type VerifyUserParamsType = z.infer<typeof VerifyUserSchema>['params'];
+export type ForgotPasswordBodyType = z.infer<
+  typeof ForgotPasswordSchema
+>['body'];
+export type ResetPasswordParamsType = z.infer<
+  typeof ResetPasswordSchema
+>['params'];
+export type ResetPasswordBodyType = z.infer<typeof ResetPasswordSchema>['body'];

@@ -110,6 +110,45 @@ router.get('/me', requireAuthMiddleware, getCurrentUserHandler);
  */
 router.get('/:id', validateResource(UserIdSchema), getUserByIdHandler);
 
+/**
+ * @openapi
+ * /api/v1/users/{id}:
+ *  put:
+ *    tags:
+ *      - Users
+ *    description: Update user
+ *    security:
+ *      - bearerAuth: []
+ *    parameters:
+ *      - name: id
+ *        in: path
+ *        description: Id of the user
+ *        required: true
+ *        schema:
+ *          type: string
+ *          example: 507f191e810c19729de860ea
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            $ref: '#/components/schemas/UpdateUserInput'
+ *    responses:
+ *      200:
+ *        description: Update user response
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/UpdateUserResponse'
+ *      400:
+ *        description: Bad request
+ *      401:
+ *        description: Unauthorized
+ *      403:
+ *        description: Forbidden
+ *      404:
+ *        description: User not found
+ */
 router.put(
   '/:id',
   requireAuthMiddleware,
@@ -117,6 +156,29 @@ router.put(
   updateUserHandler
 );
 
+/**
+ * @openapi
+ * /api/v1/users/{id}:
+ *  delete:
+ *    tags:
+ *      - Users
+ *    description: Delete user
+ *    security:
+ *      - bearerAuth: []
+ *    parameters:
+ *      - name: id
+ *        in: path
+ *        description: Id of the user
+ *        required: true
+ *        schema:
+ *          type: string
+ *          example: 507f191e810c19729de860ea
+ *    responses:
+ *      204:
+ *        description: Delete user response
+ *      404:
+ *        description: User not found
+ */
 router.delete(
   '/:id',
   requireAuthMiddleware,

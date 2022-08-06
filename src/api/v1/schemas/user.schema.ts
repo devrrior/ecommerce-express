@@ -101,6 +101,37 @@ export const UserIdSchema = z.object({
   }),
 });
 
+/**
+ * @openapi
+ * components:
+ *  schemas:
+ *    UpdateUserInput:
+ *      type: object
+ *      properties:
+ *        firstName:
+ *          type: string
+ *          description: First name of the user
+ *          example: "Marco"
+ *        lastName:
+ *          type: string
+ *          description: Last name of the user
+ *          example: "Polo"
+ *    UpdateUserResponse:
+ *      type: object
+ *      properties:
+ *        _id:
+ *          type: string
+ *          description: Id of the user
+ *          example: 507f191e810c19729de860ea
+ *        firstName:
+ *          type: string
+ *          description: First name of the user
+ *          example: "Marco"
+ *        lastName:
+ *          type: string
+ *          description: Last name of the user
+ *          example: "Polo"
+ */
 export const UpdateUserSchema = z.object({
   params: z.object({
     id: z.string({ required_error: 'Id is required' }).length(24, 'Invalid id'),

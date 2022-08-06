@@ -40,7 +40,7 @@ export class User implements IUser {
   @prop({ required: true })
   password: string;
 
-  @prop({ required: true, default: () => nanoid() })
+  @prop({ required: true })
   verificationCode: string;
 
   @prop({ default: false })

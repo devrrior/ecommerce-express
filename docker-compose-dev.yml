@@ -1,16 +1,14 @@
 version: '3.9'
 services:
 
-  mongo_db:
+  mongo:
     image: mongo
     ports:
       - '27017:27017'
     volumes:
       - ecommerce-mongo:/data/db
-    environment:
-      - MONGO_INITDB_DATABASE=ecommerce
 
-  api-express:
+  express:
     build:
       context: .
       dockerfile: local.Dockerfile
@@ -20,7 +18,7 @@ services:
       - .:/app
       - /app/node_modules
     environment:
-      - DB_URI=mongodb://mongo_db:27017/ecommerce
+      - DB_URI=mongodb://mongo:27017/ecommerce
     depends_on:
       - mongo
 

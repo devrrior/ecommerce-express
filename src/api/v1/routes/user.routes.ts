@@ -2,13 +2,19 @@ import { Router } from 'express';
 
 import {
   createUserHandler,
+  deleteUserHandler,
   getCurrentUserHandler,
   getListUserHandler,
   getUserByIdHandler,
+  updateUserHandler,
 } from '../controllers/user.controller';
 import requireAuthMiddleware from '../middlewares/requireAuth.middleware';
 import validateResource from '../middlewares/validateResource.middleware';
-import { CreateUserSchema } from '../schemas/user.schema';
+import {
+  CreateUserSchema,
+  UpdateUserSchema,
+  UserIdSchema,
+} from '../schemas/user.schema';
 
 const router = Router();
 
@@ -102,6 +108,20 @@ router.get('/me', requireAuthMiddleware, getCurrentUserHandler);
  *      404:
  *        description: User not found
  */
-router.get('/:id', getUserByIdHandler);
+router.get('/:id', validateResource(UserIdSchema), getUserByIdHandler);
+
+router.put(
+  '/:id',
+  requireAuthMiddleware,
+  validateResource(UpdateUserSchema),
+  updateUserHandler
+);
+
+router.delete(
+  '/:id',
+  requireAuthMiddleware,
+  validateResource(UserIdSchema),
+  deleteUserHandler
+);
 
 export default router;

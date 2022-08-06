@@ -3,17 +3,23 @@ import { Router } from 'express';
 import {
   createUserHandler,
   deleteUserHandler,
+  forgotPasswordHandler,
   getCurrentUserHandler,
   getListUserHandler,
   getUserByIdHandler,
+  resetPasswordHandler,
   updateUserHandler,
+  verifyUserHandler,
 } from '../controllers/user.controller';
 import requireAuthMiddleware from '../middlewares/requireAuth.middleware';
 import validateResource from '../middlewares/validateResource.middleware';
 import {
   CreateUserSchema,
+  ForgotPasswordSchema,
+  ResetPasswordSchema,
   UpdateUserSchema,
   UserIdSchema,
+  VerifyUserSchema,
 } from '../schemas/user.schema';
 
 const router = Router();
@@ -184,6 +190,20 @@ router.delete(
   requireAuthMiddleware,
   validateResource(UserIdSchema),
   deleteUserHandler
+);
+
+router.post('/verify', validateResource(VerifyUserSchema), verifyUserHandler);
+
+router.post(
+  '/forgot-password',
+  validateResource(ForgotPasswordSchema),
+  forgotPasswordHandler
+);
+
+router.post(
+  'reset-password',
+  validateResource(ResetPasswordSchema),
+  resetPasswordHandler
 );
 
 export default router;

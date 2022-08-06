@@ -36,10 +36,14 @@ class UserService
     return user ? user.toObject() : null;
   }
 
-  async createOne(resource: Partial<IUser>): Promise<IUser> {
-    const user = await UserModel.create(resource);
-
-    return user.toObject();
+  async createOne(resource: Partial<IUser>): Promise<IUser | null> {
+    // try catch
+    try {
+      const user = await UserModel.create(resource);
+      return user ? user.toObject() : null;
+    } catch (error) {
+      return null;
+    }
   }
 
   async createMany(resources: IUser[]): Promise<IUser[]> {

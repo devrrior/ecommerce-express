@@ -43,7 +43,9 @@ const createCategoryHandler = async (
 ) => {
   const { name } = req.body;
 
-  const category = await CategoryService.createOne({ name });
+  const [category, error] = await CategoryService.createOne({ name });
+
+  if (error) return res.status(409).send({ message_error: error });
 
   const payload = omit(category, categoryPrivateFields);
 

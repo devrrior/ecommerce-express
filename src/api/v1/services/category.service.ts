@@ -34,10 +34,16 @@ class CategoryService
     return categories.map((category) => category.toObject());
   }
 
-  async createOne(resource: ICategory): Promise<ICategory> {
-    const category = await CategoryModel.create(resource);
+  async createOne(
+    resource: ICategory
+  ): Promise<[ICategory | null, string | null]> {
+    try {
+      const category = await CategoryModel.create(resource);
 
-    return category.toObject();
+      return [category.toObject(), null];
+    } catch (e: any) {
+      return [null, 'Category not created'];
+    }
   }
 
   async putByName(

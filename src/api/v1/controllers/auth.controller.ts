@@ -21,6 +21,8 @@ const createTokensHandler = async (
 
   const user = await UserService.getByEmail(email);
 
+  if (!user?.verified) return res.status(401).send('User not verified');
+
   if (!user) return res.status(401).send();
 
   const isValidPassword = await argon2.verify(user.password, password);

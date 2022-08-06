@@ -10,7 +10,11 @@ import {
 import requireAuthMiddleware from '../middlewares/requireAuth.middleware';
 import restrictTo from '../middlewares/restrictTo.middleware';
 import validateResource from '../middlewares/validateResource.middleware';
-import { CreateCategorySchema } from '../schemas/category.schema';
+import {
+  CategoryNameSchema,
+  CreateCategorySchema,
+  UpdateCategorySchema,
+} from '../schemas/category.schema';
 
 const router = Router();
 
@@ -58,7 +62,11 @@ router.get('', getListCategoryHandler);
  *      404:
  *        description: Category not found
  */
-router.get('/:name', getCategoryByNameHandler);
+router.get(
+  '/:name',
+  validateResource(CategoryNameSchema),
+  getCategoryByNameHandler
+);
 
 /**
  * @openapi
@@ -140,6 +148,7 @@ router.put(
   '/:name',
   requireAuthMiddleware,
   restrictTo('admin'),
+  validateResource(UpdateCategorySchema),
   updateCategoryHandler
 );
 
@@ -174,6 +183,7 @@ router.delete(
   '/:name',
   requireAuthMiddleware,
   restrictTo('admin'),
+  validateResource(CategoryNameSchema),
   deleteCategoryHandler
 );
 

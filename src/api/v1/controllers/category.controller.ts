@@ -2,7 +2,12 @@ import { Request, Response } from 'express';
 import { omit } from 'lodash';
 
 import { categoryPrivateFields } from '../models/category.model';
-import { CreateCategoryType } from '../schemas/category.schema';
+import {
+  CategoryNameParamsType,
+  CreateCategoryBodyType,
+  UpdateCategoryBodyType,
+  UpdateCategoryParamsType,
+} from '../schemas/category.schema';
 import CategoryService from '../services/category.service';
 
 const getListCategoryHandler = async (_: Request, res: Response) => {
@@ -15,7 +20,10 @@ const getListCategoryHandler = async (_: Request, res: Response) => {
   return res.status(200).send(payload);
 };
 
-const getCategoryByNameHandler = async (req: Request, res: Response) => {
+const getCategoryByNameHandler = async (
+  req: Request<CategoryNameParamsType>,
+  res: Response
+) => {
   const { name } = req.params;
 
   const category = await CategoryService.getByName(name);
@@ -30,11 +38,7 @@ const getCategoryByNameHandler = async (req: Request, res: Response) => {
 };
 
 const createCategoryHandler = async (
-  req: Request<
-    Record<string, unknown>,
-    Record<string, unknown>,
-    CreateCategoryType
-  >,
+  req: Request<unknown, unknown, CreateCategoryBodyType>,
   res: Response
 ) => {
   const { name } = req.body;
@@ -46,7 +50,10 @@ const createCategoryHandler = async (
   return res.status(201).send(payload);
 };
 
-const updateCategoryHandler = async (req: Request, res: Response) => {
+const updateCategoryHandler = async (
+  req: Request<UpdateCategoryParamsType, unknown, UpdateCategoryBodyType>,
+  res: Response
+) => {
   const { name: nameParams } = req.params;
   const { name } = req.body;
 
@@ -61,7 +68,10 @@ const updateCategoryHandler = async (req: Request, res: Response) => {
   return res.status(404).send();
 };
 
-const deleteCategoryHandler = async (req: Request, res: Response) => {
+const deleteCategoryHandler = async (
+  req: Request<CategoryNameParamsType>,
+  res: Response
+) => {
   const { name } = req.params;
 
   const response = await CategoryService.deleteByName(name);

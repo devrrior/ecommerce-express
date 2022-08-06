@@ -7,9 +7,13 @@ import IUser from '../interfaces/models/user.interface';
 import { userPrivateFields } from '../models/user.model';
 import {
   CreateUserBodyType,
+  ForgotPasswordBodyType,
+  ResetPasswordBodyType,
+  ResetPasswordParamsType,
   UpdateUserBodyType,
   UpdateUserParamsType,
   UserIdParamsType,
+  VerifyUserParamsType,
 } from '../schemas/user.schema';
 import UserService from '../services/user.service';
 import sendEmail from '../utils/mailer';
@@ -20,14 +24,12 @@ const createUserHandler = async (
 ) => {
   const { email, password, firstName, lastName } = req.body;
 
-  const VERIFICATION_TOKEN_SECRET_KEY = process.env.JWT_SECRET_KEY || '1234';
+  const VERIFICATION_TOKEN_SECRET_KEY =
+    process.env.VERIFICATION_SECRET_KEY || '1234';
 
   const verificationCode = await jwt.sign(
     { email },
-    VERIFICATION_TOKEN_SECRET_KEY,
-    {
-      expiresIn: '1d',
-    }
+    VERIFICATION_TOKEN_SECRET_KEY
   );
 
   const userData: Pick<
@@ -59,7 +61,7 @@ const createUserHandler = async (
     to: user?.email,
     from: 'test@example.com',
     subject: 'Welcome to our app. Verify your email',
-    text: `Hello ${user?.firstName}, please verify your email by clicking this link: http://localhost:3000/verify/${verificationCode}`,
+    text: `Hello ${user?.firstName}, please verify your email by clicking this link: http://localhost:3000/api/v1/user/verify/${verificationCode}`,
   });
 
   return res.status(201).send(payload);
@@ -135,11 +137,120 @@ const deleteUserHandler = async (
   return res.status(204).send();
 };
 
+const verifyUserHandler = async (
+  req: Request<VerifyUserParamsType>,
+  res: Response
+) => {
+  const { token } = req.params;
+
+  const VERIFICATION_TOKEN_SECRET_KEY =
+    process.env.VERIFICATION_SECRET_KEY || '1234';
+
+  const { email } = (await jwt.verify(
+    token,
+    VERIFICATION_TOKEN_SECRET_KEY
+  )) as { email: string };
+
+  const user = await UserService.getByEmail(email);
+
+  if (!user) return res.status(404).send();
+
+  if (user.verificationCode !== token) return res.status(403).send();
+
+  if (user.verified) return res.status(409).send();
+
+  const updatedUser = await UserService.patchById(user._id as string, {
+    verified: true,
+  });
+
+  if (!updatedUser) return res.status(500).send();
+
+  const payload = omit(updatedUser, userPrivateFields);
+
+  return res.status(200).send(payload);
+};
+
+const forgotPasswordHandler = async (
+  req: Request<unknown, unknown, ForgotPasswordBodyType>,
+  res: Response
+) => {
+  const message =
+    'If a user with that email is registered you will receive a password reset email';
+
+  const { email } = req.body;
+
+  const user = await UserService.getByEmail(email);
+
+  if (user?.verified || !user) return res.status(200).send({ message });
+
+  const RESET_PASSWORD_TOKEN_SECRET_KEY =
+    process.env.RESET_PASSWORD_SECRET_KEY || '1234';
+
+  const verificationCode = await jwt.sign(
+    { email },
+    RESET_PASSWORD_TOKEN_SECRET_KEY,
+    { expiresIn: '1h' }
+  );
+
+  const updatedUser = await UserService.patchById(user._id as string, {
+    verificationCode,
+  });
+
+  if (!updatedUser) return res.status(500).send();
+
+  await sendEmail({
+    to: user?.email,
+    from: 'test@example.com',
+    subject: 'Reset your password',
+    text: `Hello ${user?.firstName}, please reset your password by clicking this link: http://localhost:3000/api/v1/user/reset-password/${verificationCode}`,
+  });
+
+  return res.status(200).send({ message });
+};
+
+const resetPasswordHandler = async (
+  req: Request<ResetPasswordParamsType, unknown, ResetPasswordBodyType>,
+  res: Response
+) => {
+  const { token } = req.params;
+  const { newPassword } = req.body;
+
+  const RESET_PASSWORD_TOKEN_SECRET_KEY =
+    process.env.RESET_PASSWORD_SECRET_KEY || '1234';
+
+  const { email } = (await jwt.verify(
+    token,
+    RESET_PASSWORD_TOKEN_SECRET_KEY
+  )) as { email: string };
+
+  const user = await UserService.getByEmail(email);
+
+  if (!user) return res.status(404).send();
+
+  if (token !== user.verificationCode) return res.status(403).send();
+
+  const hashPassword = await argon2.hash(newPassword);
+
+  const updatedUser = await UserService.patchById(user._id as string, {
+    password: hashPassword,
+    passwordResetCode: null,
+  });
+
+  if (!updatedUser) return res.status(500).send();
+
+  const payload = omit(updatedUser, userPrivateFields);
+
+  return res.status(200).send(payload);
+};
+
 export {
   createUserHandler,
   deleteUserHandler,
+  forgotPasswordHandler,
   getCurrentUserHandler,
   getListUserHandler,
   getUserByIdHandler,
+  resetPasswordHandler,
   updateUserHandler,
+  verifyUserHandler,
 };

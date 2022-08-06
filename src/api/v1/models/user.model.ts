@@ -4,7 +4,6 @@ import {
   prop,
   Severity,
 } from '@typegoose/typegoose';
-import { nanoid } from 'nanoid';
 
 import IUser, { Role } from '../interfaces/models/user.interface';
 

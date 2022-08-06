@@ -1,5 +1,6 @@
 import argon2 from 'argon2';
 import { Request, Response } from 'express';
+import jwt from 'jsonwebtoken';
 import { omit } from 'lodash';
 
 import IUser from '../interfaces/models/user.interface';
@@ -11,6 +12,7 @@ import {
   UserIdParamsType,
 } from '../schemas/user.schema';
 import UserService from '../services/user.service';
+import sendEmail from '../utils/mailer';
 
 const createUserHandler = async (
   req: Request<unknown, unknown, CreateUserBodyType>,
@@ -18,13 +20,26 @@ const createUserHandler = async (
 ) => {
   const { email, password, firstName, lastName } = req.body;
 
-  const userData: Pick<IUser, 'email' | 'password' | 'firstName' | 'lastName'> =
+  const VERIFICATION_TOKEN_SECRET_KEY = process.env.JWT_SECRET_KEY || '1234';
+
+  const verificationCode = await jwt.sign(
+    { email },
+    VERIFICATION_TOKEN_SECRET_KEY,
     {
-      email,
-      password,
-      firstName,
-      lastName,
-    };
+      expiresIn: '1d',
+    }
+  );
+
+  const userData: Pick<
+    IUser,
+    'email' | 'password' | 'firstName' | 'lastName' | 'verificationCode'
+  > = {
+    email,
+    password,
+    firstName,
+    lastName,
+    verificationCode,
+  };
 
   const hashPassword = await argon2.hash(userData.password);
 
@@ -38,13 +53,16 @@ const createUserHandler = async (
   if (error && error.includes('User'))
     return res.status(500).send({ message_error: error });
 
-  if (user) {
-    const payload = omit(user, userPrivateFields);
-    return res.status(201).send(payload);
-  }
+  const payload = omit(user, userPrivateFields);
 
-  // return that message, because it's the unique error could be
-  return res.status(400).send({ message_error: 'Email is not available' });
+  await sendEmail({
+    to: user?.email,
+    from: 'test@example.com',
+    subject: 'Welcome to our app. Verify your email',
+    text: `Hello ${user?.firstName}, please verify your email by clicking this link: http://localhost:3000/verify/${verificationCode}`,
+  });
+
+  return res.status(201).send(payload);
 };
 
 const getListUserHandler = async (_: Request, res: Response) => {

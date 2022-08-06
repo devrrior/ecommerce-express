@@ -36,13 +36,18 @@ class UserService
     return user ? user.toObject() : null;
   }
 
-  async createOne(resource: Partial<IUser>): Promise<IUser | null> {
+  async createOne(
+    resource: Partial<IUser>
+  ): Promise<[IUser | null, string | null]> {
     // try catch
     try {
       const user = await UserModel.create(resource);
-      return user ? user.toObject() : null;
-    } catch (error) {
-      return null;
+      return [user.toObject(), null];
+    } catch (error: any) {
+      if (error.code === 11000) {
+        return [null, 'Email is not available'];
+      }
+      return [null, 'User not created'];
     }
   }
 

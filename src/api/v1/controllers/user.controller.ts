@@ -30,7 +30,13 @@ const createUserHandler = async (
 
   userData.password = hashPassword;
 
-  const user = await UserService.createOne(userData);
+  const [user, error] = await UserService.createOne(userData);
+
+  if (error && error.includes('Email'))
+    return res.status(409).send({ message_error: error });
+
+  if (error && error.includes('User'))
+    return res.status(500).send({ message_error: error });
 
   if (user) {
     const payload = omit(user, userPrivateFields);

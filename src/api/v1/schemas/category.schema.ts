@@ -29,8 +29,42 @@ export const CreateCategorySchema = z.object({
       .string({
         required_error: 'Name is required',
       })
-      .min(1),
+      .min(1, 'Name must be at least 1 character long'),
   }),
 });
 
-export type CreateCategoryType = z.infer<typeof CreateCategorySchema>['body'];
+export const CategoryNameSchema = z.object({
+  params: z.object({
+    name: z
+      .string({ required_error: 'Name is required' })
+      .min(1, 'Name must be at least 1 character long'),
+  }),
+});
+
+export const UpdateCategorySchema = z.object({
+  params: z.object({
+    name: z
+      .string({ required_error: 'Name is required' })
+      .min(1, 'Name must be at least 1 character long'),
+  }),
+  body: z.object({
+    name: z
+      .string({
+        required_error: 'Name is required',
+      })
+      .min(1, 'Name must be at least 1 character long'),
+  }),
+});
+
+export type CreateCategoryBodyType = z.infer<
+  typeof CreateCategorySchema
+>['body'];
+export type CategoryNameParamsType = z.infer<
+  typeof CategoryNameSchema
+>['params'];
+export type UpdateCategoryBodyType = z.infer<
+  typeof UpdateCategorySchema
+>['body'];
+export type UpdateCategoryParamsType = z.infer<
+  typeof UpdateCategorySchema
+>['params'];

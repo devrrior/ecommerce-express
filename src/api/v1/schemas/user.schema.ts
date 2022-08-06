@@ -95,4 +95,29 @@ export const CreateUserSchema = z.object({
     }),
 });
 
-export type CreateUserType = z.infer<typeof CreateUserSchema>['body'];
+export const UserIdSchema = z.object({
+  params: z.object({
+    id: z.string({ required_error: 'Id is required' }).length(24, 'Invalid id'),
+  }),
+});
+
+export const UpdateUserSchema = z.object({
+  params: z.object({
+    id: z.string({ required_error: 'Id is required' }).length(24, 'Invalid id'),
+  }),
+  body: z.object({
+    firstName: z
+      .string({ required_error: 'First name is required' })
+      .min(1, `Empty field is not valid`)
+      .optional(),
+    lastName: z
+      .string({ required_error: 'Last name is required' })
+      .min(1, `Empty field is not valid`)
+      .optional(),
+  }),
+});
+
+export type CreateUserBodyType = z.infer<typeof CreateUserSchema>['body'];
+export type UserIdParamsType = z.infer<typeof UserIdSchema>['params'];
+export type UpdateUserBodyType = z.infer<typeof UpdateUserSchema>['body'];
+export type UpdateUserParamsType = z.infer<typeof UpdateUserSchema>['params'];

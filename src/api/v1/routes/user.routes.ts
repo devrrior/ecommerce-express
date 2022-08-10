@@ -192,16 +192,114 @@ router.delete(
   deleteUserHandler
 );
 
-router.post('/verify', validateResource(VerifyUserSchema), verifyUserHandler);
+/**
+ * @openapi
+ * /api/v1/users/verify/{token}:
+ *  post:
+ *    tags:
+ *      - Users
+ *    description: Verify user
+ *    parameters:
+ *      - name: token
+ *        in: path
+ *        description: Token of the user
+ *        required: true
+ *        schema:
+ *          type: string
+ *          example: 507f191e810c19729de860ea
+ *    responses:
+ *      200:
+ *        description: Verify user response
+ *      400:
+ *        description: Bad request
+ *      403:
+ *        description: Forbidden
+ *      404:
+ *        description: User not found
+ *      409:
+ *        description: Conflict
+ */
+router.post(
+  '/verify/:token',
+  validateResource(VerifyUserSchema),
+  verifyUserHandler
+);
 
+/**
+ * @openapi
+ * /api/v1/users/forgot-password:
+ *  post:
+ *    tags:
+ *      - Users
+ *    description: Forgot password
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            type: object
+ *            properties:
+ *              email:
+ *                type: string
+ *                example: john@email.com
+ *    responses:
+ *      200:
+ *        description: Forgot password response
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                message:
+ *                  type: string
+ *                  example: If a user with that email is registered you will receive a password reset email
+ */
 router.post(
   '/forgot-password',
   validateResource(ForgotPasswordSchema),
   forgotPasswordHandler
 );
 
+/**
+ * @openapi
+ * /api/v1/users/reset-password/{token}:
+ *  post:
+ *    tags:
+ *      - Users
+ *    description: Reset password
+ *    parameters:
+ *      - name: token
+ *        in: path
+ *        description: Token of the user
+ *        required: true
+ *        schema:
+ *          type: string
+ *          example: 507f191e810c19729de860ea
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            type: object
+ *            properties:
+ *              newPassword:
+ *                type: string
+ *                example: 12345678
+ *              newPasswordConfirmation:
+ *                type: string
+ *                example: 12345678
+ *    responses:
+ *      200:
+ *       description: Reset password response
+ *      400:
+ *        description: Bad request
+ *      403:
+ *        description: Forbidden
+ *      404:
+ *        description: User not found
+ */
 router.post(
-  'reset-password',
+  '/reset-password/:token',
   validateResource(ResetPasswordSchema),
   resetPasswordHandler
 );

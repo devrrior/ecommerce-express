@@ -78,7 +78,7 @@ export const CreateUserSchema = z.object({
         .email('Not a valid email'),
       password: z
         .string({ required_error: 'Password is required' })
-        .min(6, 'Password is too shor - Should be min 6 chars'),
+        .min(6, 'Password is too short - Should be min 6 chars'),
       passwordConfirmation: z.string({
         required_error: 'Password is required',
       }),
@@ -170,7 +170,7 @@ export const ResetPasswordSchema = z.object({
     .object({
       newPassword: z
         .string({ required_error: 'Password is required' })
-        .min(6, 'Password is too shor - Should be min 6 chars'),
+        .min(6, 'Password is too short - Should be min 6 chars'),
       newPasswordConfirmation: z.string({
         required_error: 'Password is required',
       }),

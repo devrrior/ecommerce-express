@@ -27,10 +27,7 @@ const createUserHandler = async (
   const VERIFICATION_TOKEN_SECRET_KEY =
     process.env.VERIFICATION_SECRET_KEY || '1234';
 
-  const verificationCode = await jwt.sign(
-    { email },
-    VERIFICATION_TOKEN_SECRET_KEY
-  );
+  const verificationCode = jwt.sign({ email }, VERIFICATION_TOKEN_SECRET_KEY);
 
   const userData: Pick<
     IUser,
@@ -146,12 +143,13 @@ const verifyUserHandler = async (
   const VERIFICATION_TOKEN_SECRET_KEY =
     process.env.VERIFICATION_SECRET_KEY || '1234';
 
-  const { email } = (await jwt.verify(
-    token,
-    VERIFICATION_TOKEN_SECRET_KEY
-  )) as { email: string };
+  const decoded = jwt.verify(token, VERIFICATION_TOKEN_SECRET_KEY) as {
+    email: string;
+  };
 
-  const user = await UserService.getByEmail(email);
+  if (!decoded) return res.status(400).send();
+
+  const user = await UserService.getByEmail(decoded.email);
 
   if (!user) return res.status(404).send();
 
@@ -181,19 +179,19 @@ const forgotPasswordHandler = async (
 
   const user = await UserService.getByEmail(email);
 
-  if (user?.verified || !user) return res.status(200).send({ message });
+  if (!user || !user?.verified) return res.status(200).send({ message });
 
   const RESET_PASSWORD_TOKEN_SECRET_KEY =
     process.env.RESET_PASSWORD_SECRET_KEY || '1234';
 
-  const verificationCode = await jwt.sign(
+  const passwordResetCode = jwt.sign(
     { email },
     RESET_PASSWORD_TOKEN_SECRET_KEY,
     { expiresIn: '1h' }
   );
 
   const updatedUser = await UserService.patchById(user._id as string, {
-    verificationCode,
+    passwordResetCode,
   });
 
   if (!updatedUser) return res.status(500).send();
@@ -202,7 +200,7 @@ const forgotPasswordHandler = async (
     to: user?.email,
     from: 'test@example.com',
     subject: 'Reset your password',
-    text: `Hello ${user?.firstName}, please reset your password by clicking this link: http://localhost:3000/api/v1/user/reset-password/${verificationCode}`,
+    text: `Hello ${user?.firstName}, please reset your password by clicking this link: http://localhost:3000/api/v1/user/reset-password/${passwordResetCode}`,
   });
 
   return res.status(200).send({ message });
@@ -218,16 +216,17 @@ const resetPasswordHandler = async (
   const RESET_PASSWORD_TOKEN_SECRET_KEY =
     process.env.RESET_PASSWORD_SECRET_KEY || '1234';
 
-  const { email } = (await jwt.verify(
-    token,
-    RESET_PASSWORD_TOKEN_SECRET_KEY
-  )) as { email: string };
+  const decoded = jwt.verify(token, RESET_PASSWORD_TOKEN_SECRET_KEY) as {
+    email: string;
+  };
 
-  const user = await UserService.getByEmail(email);
+  if (!decoded) return res.status(400).send();
+
+  const user = await UserService.getByEmail(decoded.email);
 
   if (!user) return res.status(404).send();
 
-  if (token !== user.verificationCode) return res.status(403).send();
+  if (token !== user.passwordResetCode) return res.status(403).send();
 
   const hashPassword = await argon2.hash(newPassword);
 

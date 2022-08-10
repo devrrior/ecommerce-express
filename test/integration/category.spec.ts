@@ -10,18 +10,23 @@ import UserService from '../../src/api/v1/services/user.service';
 import app from '../../src/config/app';
 
 const userPayloadAdmin = {
-  email: 'devrrior@gmail.com',
-  password: 'fernando123',
+  email: 'john@gmail.com',
+  password: 'password',
+  passwordConfirmation: 'password',
+  firstName: 'John',
+  lastName: 'Doe',
   role: Role.ADMIN,
-  firstName: 'Fernando',
-  lastName: 'Guerrero',
+  verificationCode: '123456',
+  verified: true,
 };
 
 const userPayloadCustomer = {
-  email: 'fer@gmail.com',
-  password: 'fernando123',
-  firstName: 'Fernando',
-  lastName: 'Guerrero',
+  email: 'santiago@gmail.com',
+  password: 'password',
+  firstName: 'Santiago',
+  lastName: 'Perez',
+  verificationCode: '123456',
+  verified: true,
 };
 
 const categoryPayload = {

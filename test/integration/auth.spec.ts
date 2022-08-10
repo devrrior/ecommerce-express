@@ -1,16 +1,20 @@
+import argon2 from 'argon2';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import mongoose from 'mongoose';
 import request from 'supertest';
 
+import UserService from '../../src/api/v1/services/user.service';
 import app from '../../src/config/app';
 
 const userPayload = {
-  email: 'devrrior@gmail.com',
-  password: 'fernando123',
-  passwordConfirmation: 'fernando123',
-  firstName: 'Fernando',
-  lastName: 'Guerrero',
+  email: 'santiago@gmail.com',
+  password: 'password',
+  firstName: 'Santiago',
+  lastName: 'Perez',
+  verificationCode: '123456',
 };
+
+let userAuthRefreshToken = '';
 
 describe('/tokens', () => {
   beforeAll(async () => {
@@ -19,7 +23,11 @@ describe('/tokens', () => {
 
     await mongoose.connect(mongoServer.getUri());
 
-    await request(app).post('/api/v1/users').send(userPayload);
+    await UserService.createOne({
+      ...userPayload,
+      password: await argon2.hash(userPayload.password),
+      verified: true,
+    });
   });
 
   afterAll(async () => {
@@ -28,24 +36,22 @@ describe('/tokens', () => {
   });
 
   test('Generate JWT', async () => {
-    const { statusCode } = await request(app).post('/api/v1/auth/tokens').send({
-      email: userPayload.email,
-      password: userPayload.password,
-    });
+    const { statusCode, body } = await request(app)
+      .post('/api/v1/auth/tokens')
+      .send({
+        email: userPayload.email,
+        password: userPayload.password,
+      });
 
     expect(statusCode).toBe(201);
+
+    userAuthRefreshToken = body.refresh;
   });
 
   test('Refresh tokens', async () => {
-    const { statusCode: generateStatusCode, body } = await request(app)
-      .post('/api/v1/auth/tokens')
-      .send({ email: userPayload.email, password: userPayload.password });
-
-    expect(generateStatusCode).toBe(201);
-
     const { statusCode } = await request(app)
       .post('/api/v1/auth/tokens/refresh')
-      .send({ refresh: body.refresh });
+      .send({ refresh: userAuthRefreshToken });
 
     expect(statusCode).toBe(201);
   });

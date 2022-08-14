@@ -3,11 +3,11 @@ import { MongoMemoryServer } from 'mongodb-memory-server';
 import mongoose from 'mongoose';
 import request from 'supertest';
 
-import ITokens from '../../src/api/v1/interfaces/models/tokens.interface';
-import { Role } from '../../src/api/v1/interfaces/models/user.interface';
-import CategoryService from '../../src/api/v1/services/category.service';
-import UserService from '../../src/api/v1/services/user.service';
-import app from '../../src/config/app';
+import app from '../../../../config/app';
+import ITokens from '../../interfaces/models/tokens.interface';
+import { Role } from '../../interfaces/models/user.interface';
+import CategoryService from '../../services/category.service';
+import UserService from '../../services/user.service';
 
 const userPayloadAdmin = {
   email: 'john@gmail.com',

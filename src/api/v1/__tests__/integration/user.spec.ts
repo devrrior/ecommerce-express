@@ -4,8 +4,8 @@ import { MongoMemoryServer } from 'mongodb-memory-server';
 import mongoose from 'mongoose';
 import request from 'supertest';
 
-import UserService from '../../src/api/v1/services/user.service';
-import app from '../../src/config/app';
+import app from '../../../../config/app';
+import UserService from '../../services/user.service';
 
 const userPayloadWithID1 = {
   _id: '',
